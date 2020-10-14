@@ -137,7 +137,7 @@ function animePiece(leaving, landing, piecesToMove) {
       if (leavingX === landX && leavingY === landY) {
         clearInterval(travel);
 
-        //mMove delayed
+        //mMove delayed. The second move's mark.
         document.getElementById("mMove2").setAttributeNS(null, "x", landX - 30);
         document.getElementById("mMove2").setAttributeNS(null, "y", landY - 30);
 
@@ -386,7 +386,6 @@ function coloringPieces(leaving, landing) {
       coloring("ext", "stroke");
       coloring("mid", "stroke");
     }
-
   }
 }
 
@@ -401,6 +400,7 @@ function movingPiece(i) {
   let landing = i;
 
   coloringPieces(leaving, landing);
+
   landingsAgain = 0;
   again = 0;
   switch (piecesPosition[bSqSel - 1]) { //identify leaving piece

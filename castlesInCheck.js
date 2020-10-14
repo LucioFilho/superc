@@ -1,4 +1,5 @@
 /*jshint esversion: 6 */
+
 function underxyMover(moverVal) {
   let m = 0;
   while (m < 225) {
@@ -22,25 +23,69 @@ function underxyMover(moverVal) {
   }
 }
 
+function markCastleInCheck(n) {
+  //mark castles in check
+  document.getElementById("extA" + extPiecesPosition[n - 1]).setAttributeNS(null, "stroke", "rgba(255,0,0,1.0)");
+  document.getElementById("midA" + midPiecesPosition[n - 1]).setAttributeNS(null, "stroke", "rgba(255,0,0,1.0)");
+  document.getElementById("intA" + intPiecesPosition[n - 1]).setAttributeNS(null, "fill", "rgba(255,0,0,1.0)");
+}
+
+function uncheckCastles() {
+  let k = 0;
+  while (k < 64) {
+
+    if (verseReverse === "wb") {
+      if (piecesPosition[k] === "C") {
+        document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
+        document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
+        document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(0,0,0,1.0)");
+      }
+
+      if (piecesPosition[k] === "c") {
+        document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
+        document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
+        document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(255,255,255,1.0)");
+      }
+    } else {
+      if (piecesPosition[k] === "c") {
+        document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
+        document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
+        document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(0,0,0,1.0)");
+      }
+
+      if (piecesPosition[k] === "C") {
+        document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
+        document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
+        document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(255,255,255,1.0)");
+      }
+    }
+
+    k++;
+  }
+}
+
+function blackC(n) {
+  if (blackCastlesInCheck.includes(n) === false) {
+    blackCastlesInCheck.push(parseInt(n));
+    blackCastlesInCheck.sort();
+    markCastleInCheck(n);
+  }
+}
+
+function whiteC(n) {
+  if (whiteCastlesInCheck.includes(n) === false) {
+    whiteCastlesInCheck.push(parseInt(n));
+    whiteCastlesInCheck.sort();
+    markCastleInCheck(n);
+  }
+}
+
 function castlesInCheck() {
   whiteCastlesInCheck = [];
   blackCastlesInCheck = [];
 
-
-  function blackC(n) {
-    if (blackCastlesInCheck.includes(n) === false) {
-      blackCastlesInCheck.push(parseInt(n));
-      blackCastlesInCheck.sort();
-      //piecesPosition[n - 1];
-    }
-  }
-
-  function whiteC(n) {
-    if (whiteCastlesInCheck.includes(n) === false) {
-      whiteCastlesInCheck.push(parseInt(n));
-      whiteCastlesInCheck.sort();
-    }
-  }
+  //clear castles in check marksTo
+  uncheckCastles();
 
   let tripleCheck = 0;
   let i = 0;

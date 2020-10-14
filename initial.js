@@ -1,4 +1,5 @@
 /*jshint esversion: 6 */
+//link to use svg
 const svgNS = "http://www.w3.org/2000/svg";
 
 //get board
@@ -36,7 +37,6 @@ var blackCastlesInCheck = [];
 var whiteCastlesInCheck = [];
 var whiteLandingsInCheck = [];
 var blackLandingsInCheck = [];
-
 var pPReversed = [];
 var filler = "rgba(200,200,200,0.5)";
 var stroker = "rgba(0,0,0,0.3)";
@@ -271,7 +271,7 @@ function reverseCode() {
     mMoveLanding = 65 - mMoveLanding;
 
   }
-
+  //reverse array piecesPosition and pieces ID controllers
   piecesPositionReversed.reverse();
   piecesPosition = [];
   piecesPosition = Array.from(piecesPositionReversed);
@@ -291,10 +291,33 @@ function reverseCode() {
   intPiecesPosition = [];
   intPiecesPosition = Array.from(intPiecesPositionReversed);
 
+  let letters = [];
+  let numbers = [];
+  //board letters and numbers
+  if (verseReverse === "wb") {
+
+    letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    numbers = ["1", "2", "3", "4", "5", "6", "7", "8"];
+
+  } else {
+
+    letters = ["h", "g", "f", "e", "d", "c", "b", "a"];
+    numbers = ["8", "7", "6", "5", "4", "3", "2", "1"];
+
+  }
+
+  j = 0;
+  while (j < 8) {
+    //flip board letters and numbers
+    document.getElementById("letter_" + j).textContent = letters[j];
+    document.getElementById("number_" + j).textContent = numbers[j];
+
+    j++;
+  }
+
   unClickSquare();
 
   castlesInCheck();
-
 
 }
 
@@ -307,7 +330,7 @@ function boardLimits() {
   shapeBoardLimits.setAttributeNS(null, "x", 0);
   shapeBoardLimits.setAttributeNS(null, "y", 0);
   shapeBoardLimits.setAttributeNS(null, "fill", "transparent");
-  shapeBoardLimits.setAttributeNS(null, "stroke-width", 1);
+  shapeBoardLimits.setAttributeNS(null, "stroke-width", 0);
   board.appendChild(shapeBoardLimits);
 }
 
@@ -331,6 +354,39 @@ function drawSquares() {
   shape1.setAttributeNS(null, "stroke-width", 0);
   shape1.setAttributeNS(null, "shape-rendering", "geometricPrecision");
   board.appendChild(shape1);
+}
+
+function drawBoardLetters() {
+
+  let i = 0;
+  let letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  let numbers = ["1", "2", "3", "4", "5", "6", "7", "8"];
+
+  while (i < 8) {
+    const lettering = document.createElementNS(svgNS, "text");
+    lettering.setAttributeNS(null, "id", "letter_" + i);
+    lettering.setAttribute("x", (60 * (i + 1)) - 58);
+    lettering.setAttribute("y", 478);
+    lettering.setAttribute("fill", "rgba(0,0,0,0.4)");
+    lettering.setAttribute("font-family", "Helvetica");
+    lettering.setAttribute("font-weight", "bold");
+    lettering.setAttribute("font-size", 13);
+    lettering.textContent = letters[i];
+    board.appendChild(lettering);
+
+    const numbering = document.createElementNS(svgNS, "text");
+    numbering.setAttributeNS(null, "id", "number_" + i);
+    numbering.setAttribute("x", 472);
+    numbering.setAttribute("y", (60 * (8 - i)) - 49);
+    numbering.setAttribute("fill", "rgba(0,0,0,0.4)");
+    numbering.setAttribute("font-family", "Helvetica");
+    numbering.setAttribute("font-weight", "bold");
+    numbering.setAttribute("font-size", 13);
+    numbering.textContent = numbers[i];
+    board.appendChild(numbering);
+
+    i++;
+  }
 }
 
 function drawMarkMoves() {
@@ -637,28 +693,28 @@ function drawButtons(i) {
       selectPieceStatus = 0;
       unClickSquare();
     } else if (squaresToGo.includes(i)) { //second click on active squares to move
-          selectPieceStatus = 0;
-          unClickSquare();
-          if ((piecesPosition[bSqSel - 1] === piecesPosition[bSqSel - 1].toUpperCase() && turn === turn.toUpperCase()) || (piecesPosition[bSqSel - 1] === piecesPosition[bSqSel - 1].toLowerCase() && turn === turn.toLowerCase())) {
-            if (totalWCastles === 0) {
-              if (verseReverse === "wb") {
-                turn = "BLACK WINS";
-              } else {
-                turn = "WHITE WINS";
-              }
-            }
-            if (totalBCastles === 0) {
-              if (verseReverse === "bw") {
-                turn = "BLACK WINS";
-              } else {
-                turn = "WHITE WINS";
-              }
-            }
-            if (totalWCastles > 0 && totalBCastles > 0) {
-              movingPiece(i);
-            }
+      selectPieceStatus = 0;
+      unClickSquare();
+      if ((piecesPosition[bSqSel - 1] === piecesPosition[bSqSel - 1].toUpperCase() && turn === turn.toUpperCase()) || (piecesPosition[bSqSel - 1] === piecesPosition[bSqSel - 1].toLowerCase() && turn === turn.toLowerCase())) {
+        if (totalWCastles === 0) {
+          if (verseReverse === "wb") {
+            turn = "BLACK WINS";
+          } else {
+            turn = "WHITE WINS";
           }
-          bSqSel = i;
+        }
+        if (totalBCastles === 0) {
+          if (verseReverse === "bw") {
+            turn = "BLACK WINS";
+          } else {
+            turn = "WHITE WINS";
+          }
+        }
+        if (totalWCastles > 0 && totalBCastles > 0) {
+          movingPiece(i);
+        }
+      }
+      bSqSel = i;
     } else {
       selectPieceStatus = 1;
       bSqSel = i;
@@ -746,17 +802,20 @@ while (i < 64) {
   if (j === 0) {
     drawSquares();
   } else if (j === 1) {
-    drawMarkMoves();
+    drawBoardLetters();
     i = 64;
   } else if (j === 2) {
-    setPieces();
+    drawMarkMoves();
+    i = 64;
   } else if (j === 3) {
+    setPieces();
+  } else if (j === 4) {
     promoPieces();
     i = 64;
-  } else if (j === 4) {
+  } else if (j === 5) {
     callDrawMarks();
     i = 64;
-  } else if (j === 5) {
+  } else if (j === 6) {
     drawButtons(i);
   } else {
     i = 65;
