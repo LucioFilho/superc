@@ -1,5 +1,29 @@
 /*jshint esversion: 6 */
 
+//Marks positioner
+function xyMover(moverVal, xMove, yMove) {
+  let m = 0;
+  while (m < 225) {
+    m++;
+    if (moverVal === "xNegative") {
+      let actualX = parseInt(document.getElementById("Mark" + m).getAttribute("cx")) - xMove;
+      document.getElementById("Mark" + m).setAttributeNS(null, "cx", actualX);
+    }
+    if (moverVal === "yNegative") {
+      let actualY = parseInt(document.getElementById("Mark" + m).getAttribute("cy")) - yMove;
+      document.getElementById("Mark" + m).setAttributeNS(null, "cy", actualY);
+    }
+    if (moverVal === "xPositive") {
+      let actualX = parseInt(document.getElementById("Mark" + m).getAttribute("cx")) + xMove;
+      document.getElementById("Mark" + m).setAttributeNS(null, "cx", actualX);
+    }
+    if (moverVal === "yPositive") {
+      let actualY = parseInt(document.getElementById("Mark" + m).getAttribute("cy")) + yMove;
+      document.getElementById("Mark" + m).setAttributeNS(null, "cy", actualY);
+    }
+  }
+}
+
 function clickSquare(i) {
   unClickSquare();
   if (landingsAgain === 0) {
@@ -35,46 +59,22 @@ function clickSquare(i) {
   xButSq = document.getElementById("butSquare" + i).getAttribute("x");
   yButSq = document.getElementById("butSquare" + i).getAttribute("y");
 
-  //Marks positioner
-  function xyMover(moverVal) {
-    let m = 0;
-    while (m < 225) {
-      m++;
-      if (moverVal === "xNegative") {
-        let actualX = parseInt(document.getElementById("Mark" + m).getAttribute("cx")) - xMove;
-        document.getElementById("Mark" + m).setAttributeNS(null, "cx", actualX);
-      }
-      if (moverVal === "yNegative") {
-        let actualY = parseInt(document.getElementById("Mark" + m).getAttribute("cy")) - yMove;
-        document.getElementById("Mark" + m).setAttributeNS(null, "cy", actualY);
-      }
-      if (moverVal === "xPositive") {
-        let actualX = parseInt(document.getElementById("Mark" + m).getAttribute("cx")) + xMove;
-        document.getElementById("Mark" + m).setAttributeNS(null, "cx", actualX);
-      }
-      if (moverVal === "yPositive") {
-        let actualY = parseInt(document.getElementById("Mark" + m).getAttribute("cy")) + yMove;
-        document.getElementById("Mark" + m).setAttributeNS(null, "cy", actualY);
-      }
-    }
-  }
-
   if (xButSq < cx113 - 30) {
     xMove = (cx113 - xButSq) - 30;
-    xyMover("xNegative");
+    xyMover("xNegative", xMove, yMove);
   } else if (xButSq > cx113 - 30) {
     xMove = (xButSq - cx113) + 30;
-    xyMover("xPositive");
+    xyMover("xPositive", xMove, yMove);
   } else {
     xMove = 0;
   }
 
   if (yButSq < cy113 - 30) {
     yMove = (cy113 - yButSq) - 30;
-    xyMover("yNegative");
+    xyMover("yNegative", xMove, yMove);
   } else if (yButSq > cy113 - 30) {
     yMove = (yButSq - cy113) + 30;
-    xyMover("yPositive");
+    xyMover("yPositive", xMove, yMove);
   } else {
     yMove = 0;
   }
@@ -93,9 +93,22 @@ function clickSquare(i) {
       marksToType = marksToX; //get array squares Castle in check can go
     } else if (piecesPosition[i - 1] === "c" && blackCastlesInCheck.includes(i)) {
       marksToType = marksToX; //get array squares castle in check can go
-    } else {
-      let mToType = "marksTo" + piecesPosition[i - 1];
-      marksToType = Function("return " + mToType)(); //get array squares pieces can go
+    } else if (piecesPosition[i - 1] === "C") {
+      marksToType = marksToC;
+    } else if (piecesPosition[i - 1] === "c") {
+      marksToType = marksToc;
+    } else if (piecesPosition[i - 1] === "P") {
+      marksToType = marksToP;
+    } else if (piecesPosition[i - 1] === "p") {
+      marksToType = marksTop;
+    } else if (piecesPosition[i - 1] === "Q" || piecesPosition[i - 1] === "q") {
+      marksToType = marksToQ;
+    } else if (piecesPosition[i - 1] === "B" || piecesPosition[i - 1] === "b") {
+      marksToType = marksToB;
+    } else if (piecesPosition[i - 1] === "R" || piecesPosition[i - 1] === "r") {
+      marksToType = marksToR;
+    } else if (piecesPosition[i - 1] === "N" || piecesPosition[i - 1] === "n") {
+      marksToType = marksToN;
     }
 
     let p = 0;

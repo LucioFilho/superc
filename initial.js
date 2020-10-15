@@ -6,54 +6,52 @@ const svgNS = "http://www.w3.org/2000/svg";
 const board = document.getElementById("board"); //game board where match happens
 
 //vars to manage loops
-var square_x;
-var square_y;
-var evenOdd;
-var rowEvenOdd;
+var again;
+var blackCastlesInCheck = [];
+var blackLandingsInCheck = [];
+var bSqSel;
+var cli = 0;
 var drawCanvas;
-var squareColor;
+var evenOdd;
+var filler = "rgba(200,200,200,0.5)";
 var fillStyle;
-var strokeStyle;
+var i = 0;
+var j = 0;
+var landingsAgain = 0;
+var m = 0;
+var matchStatus = 0;
+var mMoveLanding;
+var mMoveLeaving;
+var pieceFill1;
+var pieceFill2;
 var pieceID1;
 var pieceID2;
 var pieceRadius1;
 var pieceRadius2;
-var pieceFill1;
-var pieceFill2;
 var pieceStroke1;
 var pieceStroke2;
 var pieceStrokeWidth1;
 var pieceStrokeWidth2;
-var squaresToGo;
-var again;
-var bSqSel;
-var mMoveLanding;
-var mMoveLeaving;
-let underxMove;
-let underyMove;
-var turn = "W";
-var verseReverse = "wb";
-var blackCastlesInCheck = [];
-var whiteCastlesInCheck = [];
-var whiteLandingsInCheck = [];
-var blackLandingsInCheck = [];
 var pPReversed = [];
-var filler = "rgba(200,200,200,0.5)";
-var stroker = "rgba(0,0,0,0.3)";
-var selectPieceStatus = 0;
-var totalWCastles = 0;
-var totalBCastles = 0;
-var landingsAgain = 0;
-var matchStatus = 0;
-var m = 0;
-var xMark = 0;
-var yMark = 0;
 var promoControl = 0;
 var promoID = 71;
-var cli = 0;
+var rowEvenOdd;
+var selectPieceStatus = 0;
+var square_x;
+var square_y;
+var squareColor;
+var squaresToGo;
+var stroker = "rgba(0,0,0,0.3)";
+var strokeStyle;
 var timer = 0;
-var j = 0;
-var i = 0;
+var totalBCastles = 0;
+var totalWCastles = 0;
+var turn = "W";
+var verseReverse = "wb";
+var whiteCastlesInCheck = [];
+var whiteLandingsInCheck = [];
+var xMark = 0;
+var yMark = 0;
 
 //take initial pieces position
 const initialNotation = "8c48O8C"; //compact code to initial position on board
@@ -162,9 +160,6 @@ const marksToC = [83, 97, 98, 99];
 const marksToc = [127, 128, 129, 143];
 const marksToX = [97, 98, 99, 112, 114, 127, 128, 129];
 
-const marksToB = [1, 15, 17, 29, 33, 43, 49, 57, 65, 71, 81, 85, 97, 99, 127, 129, 141, 145, 155, 161, 169, 177, 183, 193, 197, 209, 211, 225];
-const marksTob = [1, 15, 17, 29, 33, 43, 49, 57, 65, 71, 81, 85, 97, 99, 127, 129, 141, 145, 155, 161, 169, 177, 183, 193, 197, 209, 211, 225];
-
 const marksToBishopNW = [97, 81, 65, 49, 33, 17, 1];
 const marksToBishopNE = [99, 85, 71, 57, 43, 29, 15];
 const marksToBishopSW = [127, 141, 155, 169, 183, 197, 211];
@@ -175,15 +170,13 @@ const marksToRookW = [106, 107, 108, 109, 110, 111, 112];
 const marksToRookE = [114, 115, 116, 117, 118, 119, 120];
 const marksToRookS = [128, 143, 158, 173, 188, 203, 218];
 
+const marksToB = [1, 15, 17, 29, 33, 43, 49, 57, 65, 71, 81, 85, 97, 99, 127, 129, 141, 145, 155, 161, 169, 177, 183, 193, 197, 209, 211, 225];
+
 const marksToQ = [1, 8, 15, 17, 23, 29, 33, 38, 43, 49, 53, 57, 65, 68, 71, 81, 83, 85, 97, 98, 99, 106, 107, 108, 109, 110, 111, 112, 114, 115, 116, 117, 118, 119, 120, 127, 128, 129, 141, 143, 145, 155, 158, 161, 169, 173, 177, 183, 188, 193, 197, 203, 209, 211, 218, 225];
-const marksToq = [1, 8, 15, 17, 23, 29, 33, 38, 43, 49, 53, 57, 65, 68, 71, 81, 83, 85, 97, 98, 99, 106, 107, 108, 109, 110, 111, 112, 114, 115, 116, 117, 118, 119, 120, 127, 128, 129, 141, 143, 145, 155, 158, 161, 169, 173, 177, 183, 188, 193, 197, 203, 209, 211, 218, 225];
 
 const marksToN = [82, 84, 96, 100, 126, 130, 142, 144];
-const marksTon = [82, 84, 96, 100, 126, 130, 142, 144];
 
 const marksToR = [8, 23, 38, 53, 68, 83, 98, 128, 143, 158, 173, 188, 203, 218, 106, 107, 108, 109, 110, 111, 112, 114, 115, 116, 117, 118, 119, 120];
-const marksTor = [8, 23, 38, 53, 68, 83, 98, 128, 143, 158, 173, 188, 203, 218, 106, 107, 108, 109, 110, 111, 112, 114, 115, 116, 117, 118, 119, 120];
-
 
 //control pieces position by id
 
@@ -412,6 +405,30 @@ function drawMarkMoves() {
   shapeMoves2.setAttributeNS(null, "stroke-width", 0);
   shapeMoves2.setAttributeNS(null, "shape-rendering", "geometricPrecision");
   board.appendChild(shapeMoves2);
+}
+
+//marks to check castles in check
+function underxyMover(moverVal, xMove, yMove) {
+  let m = 0;
+  while (m < 225) {
+    m++;
+    if (moverVal === "xNegative") {
+      let actualX = parseInt(document.getElementById("underMark" + m).getAttribute("cx")) - xMove;
+      document.getElementById("underMark" + m).setAttributeNS(null, "cx", actualX);
+    }
+    if (moverVal === "yNegative") {
+      let actualY = parseInt(document.getElementById("underMark" + m).getAttribute("cy")) - yMove;
+      document.getElementById("underMark" + m).setAttributeNS(null, "cy", actualY);
+    }
+    if (moverVal === "xPositive") {
+      let actualX = parseInt(document.getElementById("underMark" + m).getAttribute("cx")) + xMove;
+      document.getElementById("underMark" + m).setAttributeNS(null, "cx", actualX);
+    }
+    if (moverVal === "yPositive") {
+      let actualY = parseInt(document.getElementById("underMark" + m).getAttribute("cy")) + yMove;
+      document.getElementById("underMark" + m).setAttributeNS(null, "cy", actualY);
+    }
+  }
 }
 
 //drawPieces

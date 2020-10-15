@@ -1,25 +1,14 @@
 /*jshint esversion: 6 */
 
-function underxyMover(moverVal) {
-  let m = 0;
-  while (m < 225) {
-    m++;
-    if (moverVal === "xNegative") {
-      let actualX = parseInt(document.getElementById("underMark" + m).getAttribute("cx")) - underxMove;
-      document.getElementById("underMark" + m).setAttributeNS(null, "cx", actualX);
-    }
-    if (moverVal === "yNegative") {
-      let actualY = parseInt(document.getElementById("underMark" + m).getAttribute("cy")) - underyMove;
-      document.getElementById("underMark" + m).setAttributeNS(null, "cy", actualY);
-    }
-    if (moverVal === "xPositive") {
-      let actualX = parseInt(document.getElementById("underMark" + m).getAttribute("cx")) + underxMove;
-      document.getElementById("underMark" + m).setAttributeNS(null, "cx", actualX);
-    }
-    if (moverVal === "yPositive") {
-      let actualY = parseInt(document.getElementById("underMark" + m).getAttribute("cy")) + underyMove;
-      document.getElementById("underMark" + m).setAttributeNS(null, "cy", actualY);
-    }
+function underWhiteC(n) {
+  if (whiteLandingsInCheck.includes(n) === false) {
+    whiteLandingsInCheck.push(parseInt(n));
+  }
+}
+
+function underBlackC(n) {
+  if (blackLandingsInCheck.includes(n) === false) {
+    blackLandingsInCheck.push(parseInt(n));
   }
 }
 
@@ -27,25 +16,8 @@ function landingInCheck(ii, nn) {
 
   ghostPiecesPosition = Array.from(piecesPosition);
 
-
   ghostPiecesPosition[nn - 1] = ghostPiecesPosition[ii - 1];
   ghostPiecesPosition[ii - 1] = "O";
-
-
-  function whiteC(n) {
-    if (whiteLandingsInCheck.includes(n) === false) {
-      whiteLandingsInCheck.push(parseInt(n));
-    }
-  }
-
-  function blackC(n) {
-    if (blackLandingsInCheck.includes(n) === false) {
-      blackLandingsInCheck.push(parseInt(n));
-    }
-  }
-
-  //console.log("ghost: " + ghostPiecesPosition + "\npP: " + piecesPosition[nn - 1]);
-
 
   let tripleCheck = 0;
   let i = 0;
@@ -63,8 +35,11 @@ function landingInCheck(ii, nn) {
     let undercy113;
     let xButSq;
     let yButSq;
+    let xMove;
+    let yMove;
     let marksToType = [];
     let marksOnBoard = [];
+    let gpP = ghostPiecesPosition[i - 1];
 
     //marks positioning
     undercx113 = document.getElementById("underMark113").getAttribute("cx");
@@ -75,47 +50,74 @@ function landingInCheck(ii, nn) {
     //Marks positioner
 
     if (xButSq < undercx113 - 30) {
-      underxMove = (undercx113 - xButSq) - 30;
-      underxyMover("xNegative");
+      xMove = (undercx113 - xButSq) - 30;
+      underxyMover("xNegative", xMove, yMove);
     } else if (xButSq > undercx113 - 30) {
-      underxMove = (xButSq - undercx113) + 30;
-      underxyMover("xPositive");
+      xMove = (xButSq - undercx113) + 30;
+      underxyMover("xPositive", xMove, yMove);
     } else {
-      underxMove = 0;
+      xMove = 0;
     }
 
     if (yButSq < undercy113 - 30) {
-      underyMove = (undercy113 - yButSq) - 30;
-      underxyMover("yNegative");
+      yMove = (undercy113 - yButSq) - 30;
+      underxyMover("yNegative", xMove, yMove);
     } else if (yButSq > undercy113 - 30) {
-      underyMove = (yButSq - undercy113) + 30;
-      underxyMover("yPositive");
+      yMove = (yButSq - undercy113) + 30;
+      underxyMover("yPositive", xMove, yMove);
     } else {
-      underyMove = 0;
+      yMove = 0;
     }
 
     // select only marks by type and inside the board
-    if (ghostPiecesPosition[i - 1] !== "O") { //check if "i" piece selected is not empty
+    if (gpP !== "O") { //check if "i" piece selected is not empty
       if (tripleCheck === 0) { //cover Castles moves exceptions
-        let mToType = "marksTo" + ghostPiecesPosition[i - 1];
-        marksToType = Function("return " + mToType)(); //get array squares pieces can go
-        //console.log("i: " + i + "\nghost: " + ghostPiecesPosition[i - 1] + "\n" + marksToType);
+        if (gpP === "C") {
+          marksToType = marksToC;
+        } else if (gpP === "c") {
+          marksToType = marksToc;
+        } else if (gpP === "P") {
+          marksToType = marksToP;
+        } else if (gpP === "p") {
+          marksToType = marksTop;
+        } else if (gpP === "Q" || gpP === "q") {
+          marksToType = marksToQ;
+        } else if (gpP === "B" || gpP === "b") {
+          marksToType = marksToB;
+        } else if (gpP === "R" || gpP === "r") {
+          marksToType = marksToR;
+        } else if (gpP === "N" || gpP === "n") {
+          marksToType = marksToN;
+        }
       } else if (tripleCheck === 1 || tripleCheck === 2) {
-        if (ghostPiecesPosition[i - 1] === "C" && whiteCastlesInCheck.includes(i)) {
+        if (gpP === "C" && whiteCastlesInCheck.includes(i)) {
           marksToType = marksToX;
-        } else if (ghostPiecesPosition[i - 1] === "c" && blackCastlesInCheck.includes(i)) {
+        } else if (gpP === "C" && whiteLandingsInCheck.includes(i)) {
           marksToType = marksToX;
-        } else if (ghostPiecesPosition[i - 1] === "c" && blackLandingsInCheck.includes(i)) {
+        } else if (gpP === "C" && totalBCastles === 1) {
           marksToType = marksToX;
-        } else if (ghostPiecesPosition[i - 1] === "C" && whiteLandingsInCheck.includes(i)) {
+        } else if (gpP === "c" && blackCastlesInCheck.includes(i)) {
           marksToType = marksToX;
-        } else if (ghostPiecesPosition[i - 1] === "C" && totalBCastles === 1) {
+        } else if (gpP === "c" && blackLandingsInCheck.includes(i)) {
           marksToType = marksToX;
-        } else if (ghostPiecesPosition[i - 1] === "c" && totalWCastles === 1) {
+        } else if (gpP === "c" && totalWCastles === 1) {
           marksToType = marksToX;
-        } else {
-          let mToType = "marksTo" + ghostPiecesPosition[i - 1];
-          marksToType = Function("return " + mToType)();
+        } else if (gpP === "C") {
+          marksToType = marksToC;
+        } else if (gpP === "c") {
+          marksToType = marksToc;
+        } else if (gpP === "P") {
+          marksToType = marksToP;
+        } else if (gpP === "p") {
+          marksToType = marksTop;
+        } else if (gpP === "Q" || gpP === "q") {
+          marksToType = marksToQ;
+        } else if (gpP === "B" || gpP === "b") {
+          marksToType = marksToB;
+        } else if (gpP === "R" || gpP === "r") {
+          marksToType = marksToR;
+        } else if (gpP === "N" || gpP === "n") {
+          marksToType = marksToN;
         }
       }
 
@@ -131,7 +133,7 @@ function landingInCheck(ii, nn) {
         let sqB = parseInt(document.getElementById("BL").getAttributeNS(null, "y")) + 480;
         if (markL < sqR && markR > sqL && markT < sqB && markB > sqT) {
           marksOnBoard.push(parseInt(marksToType[p])); //get array marks to be used
-          if (ghostPiecesPosition[i - 1] === "B" || ghostPiecesPosition[i - 1] === "b" || ghostPiecesPosition[i - 1] === "Q" || ghostPiecesPosition[i - 1] === "q") {
+          if (gpP === "B" || gpP === "b" || gpP === "Q" || gpP === "q") {
             if (marksToBishopNW.includes(marksToType[p])) {
               marksOnBoardToBishopNW.push(parseInt(marksToType[p]));
             } else if (marksToBishopNE.includes(marksToType[p])) {
@@ -142,7 +144,7 @@ function landingInCheck(ii, nn) {
               marksOnBoardToBishopSE.push(parseInt(marksToType[p]));
             }
           }
-          if (ghostPiecesPosition[i - 1] === "R" || ghostPiecesPosition[i - 1] === "r" || ghostPiecesPosition[i - 1] === "Q" || ghostPiecesPosition[i - 1] === "q") {
+          if (gpP === "R" || gpP === "r" || gpP === "Q" || gpP === "q") {
             if (marksToRookN.includes(marksToType[p])) {
               marksOnBoardToRookN.push(parseInt(marksToType[p]));
             } else if (marksToRookS.includes(marksToType[p])) {
@@ -168,6 +170,7 @@ function landingInCheck(ii, nn) {
         let n = 0;
         while (n < 64) {
           n++;
+          let gpPn = ghostPiecesPosition[n - 1];
           let markL = parseInt(document.getElementById("underMark" + marksOnBoard[m - 1]).getAttributeNS(null, "cx")) - 5;
           let markR = parseInt(document.getElementById("underMark" + marksOnBoard[m - 1]).getAttributeNS(null, "cx")) + 5;
           let markT = parseInt(document.getElementById("underMark" + marksOnBoard[m - 1]).getAttributeNS(null, "cy")) - 5;
@@ -177,42 +180,42 @@ function landingInCheck(ii, nn) {
           let sqT = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "y"));
           let sqB = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "y")) + 60;
           if (markL < sqR && markR > sqL && markT < sqB && markB > sqT) { //check collisions marks/squares
-            if (ghostPiecesPosition[i - 1] === "C") { //CASTLE check if type C
-              if (ghostPiecesPosition[n - 1] === "c" && n !== i - 16 && (n === i - 7 || n === i - 9)) { //check exceptions to special Castle's not in check diagonal moves
-                blackC(n);
+            if (gpP === "C") { //CASTLE check if type C
+              if (gpPn === "c" && n !== i - 16 && (n === i - 7 || n === i - 9)) { //check exceptions to special Castle's not in check diagonal moves
+                underBlackC(n);
               }
-              if (ghostPiecesPosition[n - 1] === "c" && n !== i - 16 && (whiteCastlesInCheck.includes(i) || totalWCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
-                blackC(n);
+              if (gpPn === "c" && n !== i - 16 && (whiteCastlesInCheck.includes(i) || totalWCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
+                underBlackC(n);
               }
-              if (ghostPiecesPosition[n - 1] === "c" && n !== i - 16 && (blackCastlesInCheck.includes(n) || totalBCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
-                blackC(n);
+              if (gpPn === "c" && n !== i - 16 && (blackCastlesInCheck.includes(n) || totalBCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
+                underBlackC(n);
               }
-            } else if (ghostPiecesPosition[i - 1] === "c") { //castle check if type c
-              if (ghostPiecesPosition[n - 1] === "C" && n !== i + 16 && (n === i + 7 || n === i + 9)) { //check exceptions to special Castle's not in check diagonal moves
-                whiteC(n);
+            } else if (gpP === "c") { //castle check if type c
+              if (gpPn === "C" && n !== i + 16 && (n === i + 7 || n === i + 9)) { //check exceptions to special Castle's not in check diagonal moves
+                underWhiteC(n);
               }
-              if (ghostPiecesPosition[n - 1] === "C" && n !== i + 16 && (blackCastlesInCheck.includes(i) || totalBCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
-                whiteC(n);
+              if (gpPn === "C" && n !== i + 16 && (blackCastlesInCheck.includes(i) || totalBCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
+                underWhiteC(n);
               }
-              if (ghostPiecesPosition[n - 1] === "C" && n !== i + 16 && (whiteCastlesInCheck.includes(n) || totalWCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
-                whiteC(n);
+              if (gpPn === "C" && n !== i + 16 && (whiteCastlesInCheck.includes(n) || totalWCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
+                underWhiteC(n);
               }
             } else if (tripleCheck === 0) {
-              if (ghostPiecesPosition[i - 1] === "P") { //PAWN
-                if (n === i - 9 && ghostPiecesPosition[n - 1] === "c") { //check exceptions to special Castle's not in check diagonal moves
-                  blackC(n);
+              if (gpP === "P") { //PAWN
+                if (n === i - 9 && gpPn === "c") { //check exceptions to special Castle's not in check diagonal moves
+                  underBlackC(n);
                 }
-                if (n === i - 7 && ghostPiecesPosition[n - 1] === "c") { //check exceptions to special Castle's not in check diagonal moves
-                  blackC(n);
+                if (n === i - 7 && gpPn === "c") { //check exceptions to special Castle's not in check diagonal moves
+                  underBlackC(n);
                 }
-              } else if (ghostPiecesPosition[i - 1] === "p") { //pawn check if type c
-                if (n === i + 9 && ghostPiecesPosition[n - 1] === "C") { //check exceptions to special Castle's not in check diagonal moves
-                  whiteC(n);
+              } else if (gpP === "p") { //pawn check if type c
+                if (n === i + 9 && gpPn === "C") { //check exceptions to special Castle's not in check diagonal moves
+                  underWhiteC(n);
                 }
-                if (n === i + 7 && ghostPiecesPosition[n - 1] === "C") { //check exceptions to special Castle's not in check diagonal moves
-                  whiteC(n);
+                if (n === i + 7 && gpPn === "C") { //check exceptions to special Castle's not in check diagonal moves
+                  underWhiteC(n);
                 }
-              } else if (ghostPiecesPosition[i - 1] === "B" || ghostPiecesPosition[i - 1] === "b") { //BbBbBbBbBbBbBb
+              } else if (gpP === "B" || gpP === "b") { //BbBbBbBbBbBbBb
                 if (marksOnBoardToBishopNW.includes(marksOnBoard[m - 1])) { //NW
                   let lineSize = 1;
                   let s = 0;
@@ -228,10 +231,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i - (1 + r * 9)] === "C" || ghostPiecesPosition[i - (1 + r * 9)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i - (1 + r * 9)] === ghostPiecesPosition[i - (1 + r * 9)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i - (1 + r * 9)] === ghostPiecesPosition[i - (1 + r * 9)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i - (1 + r * 9)] === ghostPiecesPosition[i - (1 + r * 9)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i - (1 + r * 9)] === ghostPiecesPosition[i - (1 + r * 9)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -251,10 +254,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i - (1 + r * 7)] === "C" || ghostPiecesPosition[i - (1 + r * 7)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i - (1 + r * 7)] === ghostPiecesPosition[i - (1 + r * 7)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i - (1 + r * 7)] === ghostPiecesPosition[i - (1 + r * 7)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i - (1 + r * 7)] === ghostPiecesPosition[i - (1 + r * 7)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i - (1 + r * 7)] === ghostPiecesPosition[i - (1 + r * 7)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -274,10 +277,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i + (r * 7 - 1)] === "C" || ghostPiecesPosition[i + (r * 7 - 1)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i + (r * 7 - 1)] === ghostPiecesPosition[i + (r * 7 - 1)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i + (r * 7 - 1)] === ghostPiecesPosition[i + (r * 7 - 1)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i + (r * 7 - 1)] === ghostPiecesPosition[i + (r * 7 - 1)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i + (r * 7 - 1)] === ghostPiecesPosition[i + (r * 7 - 1)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -297,16 +300,16 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i + (r * 9 - 1)] === "C" || ghostPiecesPosition[i + (r * 9 - 1)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i + (r * 9 - 1)] === ghostPiecesPosition[i + (r * 9 - 1)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i + (r * 9 - 1)] === ghostPiecesPosition[i + (r * 9 - 1)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i + (r * 9 - 1)] === ghostPiecesPosition[i + (r * 9 - 1)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i + (r * 9 - 1)] === ghostPiecesPosition[i + (r * 9 - 1)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
                   }
                 }
-              } else if (ghostPiecesPosition[i - 1] === "R" || ghostPiecesPosition[i - 1] === "r") { //RrRr
+              } else if (gpP === "R" || gpP === "r") { //RrRr
                 if (marksOnBoardToRookN.includes(marksOnBoard[m - 1])) { //NW
                   let lineSize = 1;
                   let s = 0;
@@ -322,10 +325,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i - (1 + r * 8)] === "C" || ghostPiecesPosition[i - (1 + r * 8)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i - (1 + r * 8)] === ghostPiecesPosition[i - (1 + r * 8)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i - (1 + r * 8)] === ghostPiecesPosition[i - (1 + r * 8)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i - (1 + r * 8)] === ghostPiecesPosition[i - (1 + r * 8)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i - (1 + r * 8)] === ghostPiecesPosition[i - (1 + r * 8)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -345,10 +348,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i - (1 + r)] === "C" || ghostPiecesPosition[i - (1 + r)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i - (1 + r)] === ghostPiecesPosition[i - (1 + r)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i - (1 + r)] === ghostPiecesPosition[i - (1 + r)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i - (1 + r)] === ghostPiecesPosition[i - (1 + r)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i - (1 + r)] === ghostPiecesPosition[i - (1 + r)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -368,10 +371,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i + (r - 1)] === "C" || ghostPiecesPosition[i + (r - 1)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i + (r - 1)] === ghostPiecesPosition[i + (r - 1)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i + (r - 1)] === ghostPiecesPosition[i + (r - 1)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i + (r - 1)] === ghostPiecesPosition[i + (r - 1)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i + (r - 1)] === ghostPiecesPosition[i + (r - 1)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -391,16 +394,16 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i + (r * 8 - 1)] === "C" || ghostPiecesPosition[i + (r * 8 - 1)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i + (r * 8 - 1)] === ghostPiecesPosition[i + (r * 8 - 1)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i + (r * 8 - 1)] === ghostPiecesPosition[i + (r * 8 - 1)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i + (r * 8 - 1)] === ghostPiecesPosition[i + (r * 8 - 1)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i + (r * 8 - 1)] === ghostPiecesPosition[i + (r * 8 - 1)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
                   }
                 }
-              } else if (ghostPiecesPosition[i - 1] === "Q" || ghostPiecesPosition[i - 1] === "q") { //QUEEN queen
+              } else if (gpP === "Q" || gpP === "q") { //QUEEN queen
                 fillerStroker("disable");
                 if (marksOnBoardToBishopNW.includes(marksOnBoard[m - 1])) { //NW
                   let lineSize = 1;
@@ -417,10 +420,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i - (1 + r * 9)] === "C" || ghostPiecesPosition[i - (1 + r * 9)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i - (1 + r * 9)] === ghostPiecesPosition[i - (1 + r * 9)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i - (1 + r * 9)] === ghostPiecesPosition[i - (1 + r * 9)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i - (1 + r * 9)] === ghostPiecesPosition[i - (1 + r * 9)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i - (1 + r * 9)] === ghostPiecesPosition[i - (1 + r * 9)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -440,10 +443,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i - (1 + r * 7)] === "C" || ghostPiecesPosition[i - (1 + r * 7)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i - (1 + r * 7)] === ghostPiecesPosition[i - (1 + r * 7)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i - (1 + r * 7)] === ghostPiecesPosition[i - (1 + r * 7)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i - (1 + r * 7)] === ghostPiecesPosition[i - (1 + r * 7)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i - (1 + r * 7)] === ghostPiecesPosition[i - (1 + r * 7)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -463,10 +466,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i + (r * 7 - 1)] === "C" || ghostPiecesPosition[i + (r * 7 - 1)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i + (r * 7 - 1)] === ghostPiecesPosition[i + (r * 7 - 1)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i + (r * 7 - 1)] === ghostPiecesPosition[i + (r * 7 - 1)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i + (r * 7 - 1)] === ghostPiecesPosition[i + (r * 7 - 1)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i + (r * 7 - 1)] === ghostPiecesPosition[i + (r * 7 - 1)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -486,10 +489,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i + (r * 9 - 1)] === "C" || ghostPiecesPosition[i + (r * 9 - 1)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i + (r * 9 - 1)] === ghostPiecesPosition[i + (r * 9 - 1)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i + (r * 9 - 1)] === ghostPiecesPosition[i + (r * 9 - 1)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i + (r * 9 - 1)] === ghostPiecesPosition[i + (r * 9 - 1)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i + (r * 9 - 1)] === ghostPiecesPosition[i + (r * 9 - 1)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -510,10 +513,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i - (1 + r * 8)] === "C" || ghostPiecesPosition[i - (1 + r * 8)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i - (1 + r * 8)] === ghostPiecesPosition[i - (1 + r * 8)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i - (1 + r * 8)] === ghostPiecesPosition[i - (1 + r * 8)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i - (1 + r * 8)] === ghostPiecesPosition[i - (1 + r * 8)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i - (1 + r * 8)] === ghostPiecesPosition[i - (1 + r * 8)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -533,10 +536,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i - (1 + r)] === "C" || ghostPiecesPosition[i - (1 + r)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i - (1 + r)] === ghostPiecesPosition[i - (1 + r)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i - (1 + r)] === ghostPiecesPosition[i - (1 + r)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i - (1 + r)] === ghostPiecesPosition[i - (1 + r)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i - (1 + r)] === ghostPiecesPosition[i - (1 + r)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -556,10 +559,10 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i + (r - 1)] === "C" || ghostPiecesPosition[i + (r - 1)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i + (r - 1)] === ghostPiecesPosition[i + (r - 1)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i + (r - 1)] === ghostPiecesPosition[i + (r - 1)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i + (r - 1)] === ghostPiecesPosition[i + (r - 1)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i + (r - 1)] === ghostPiecesPosition[i + (r - 1)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
@@ -579,21 +582,21 @@ function landingInCheck(ii, nn) {
                     }
                     if (r === lineSize) {
                       if (ghostPiecesPosition[i + (r * 8 - 1)] === "C" || ghostPiecesPosition[i + (r * 8 - 1)] === "c") {
-                        if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[i + (r * 8 - 1)] === ghostPiecesPosition[i + (r * 8 - 1)].toLowerCase()) {
-                          blackC(n);
-                        } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[i + (r * 8 - 1)] === ghostPiecesPosition[i + (r * 8 - 1)].toUpperCase()) {
-                          whiteC(n);
+                        if (gpP === gpP.toUpperCase() && ghostPiecesPosition[i + (r * 8 - 1)] === ghostPiecesPosition[i + (r * 8 - 1)].toLowerCase()) {
+                          underBlackC(n);
+                        } else if (gpP === gpP.toLowerCase() && ghostPiecesPosition[i + (r * 8 - 1)] === ghostPiecesPosition[i + (r * 8 - 1)].toUpperCase()) {
+                          underWhiteC(n);
                         }
                       }
                     }
                   }
                 }
-              } else if (ghostPiecesPosition[i - 1] === "N" || ghostPiecesPosition[i - 1] === "n") { //KNIGHT knight
-                if (ghostPiecesPosition[n - 1] === "C" || ghostPiecesPosition[n - 1] === "c") {
-                  if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toUpperCase() && ghostPiecesPosition[n - 1] === ghostPiecesPosition[n - 1].toLowerCase()) {
-                    blackC(n);
-                  } else if (ghostPiecesPosition[i - 1] === ghostPiecesPosition[i - 1].toLowerCase() && ghostPiecesPosition[n - 1] === ghostPiecesPosition[n - 1].toUpperCase()) {
-                    whiteC(n);
+              } else if (gpP === "N" || gpP === "n") { //KNIGHT knight
+                if (gpPn === "C" || gpPn === "c") {
+                  if (gpP === gpP.toUpperCase() && gpPn === gpPn.toLowerCase()) {
+                    underBlackC(n);
+                  } else if (gpP === gpP.toLowerCase() && gpPn === gpPn.toUpperCase()) {
+                    underWhiteC(n);
                   }
                 }
               }
