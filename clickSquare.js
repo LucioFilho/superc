@@ -24,18 +24,21 @@ function xyMover(moverVal, xMove, yMove) {
   }
 }
 
+//manage pieces' clicks to be moved.
 function clickSquare(i) {
+
   unClickSquare();
-  if (landingsAgain === 0) {
-    whiteLandingsInCheck = [];
-    blackLandingsInCheck = [];
+
+  if (LandingsAgain === 0) {
+    WhiteLandingsInCheck = [];
+    BlackLandingsInCheck = [];
     //need give 3 seconds to player time
   }
   //mark selected square
   fillerStroker("square");
-  document.getElementById("butSquare" + i).setAttributeNS(null, "fill", filler);
+  document.getElementById("butSquare" + i).setAttributeNS(null, "fill", Filler);
 
-  squaresToGo = [];
+  SquaresToGo = [];
   let marksOnBoardToRookN = [];
   let marksOnBoardToRookE = [];
   let marksOnBoardToRookW = [];
@@ -48,8 +51,8 @@ function clickSquare(i) {
   let cy113;
   let xButSq;
   let yButSq;
-  let xMove;
-  let yMove;
+  let xMove = 0;
+  let yMove = 0;
   let marksToType = [];
   let marksOnBoard = [];
 
@@ -65,8 +68,6 @@ function clickSquare(i) {
   } else if (xButSq > cx113 - 30) {
     xMove = (xButSq - cx113) + 30;
     xyMover("xPositive", xMove, yMove);
-  } else {
-    xMove = 0;
   }
 
   if (yButSq < cy113 - 30) {
@@ -75,39 +76,37 @@ function clickSquare(i) {
   } else if (yButSq > cy113 - 30) {
     yMove = (yButSq - cy113) + 30;
     xyMover("yPositive", xMove, yMove);
-  } else {
-    yMove = 0;
   }
 
   // select only marks by type and inside the board
-  if (piecesPosition[i - 1] !== "O") { //check if piece I click is not empty
+  if (PiecesPosition[i - 1] !== "O") { //check if piece I click is not empty
     fillerStroker("disable");
 
-    if (piecesPosition[i - 1] === "C" && totalWCastles === 1) {
-      whiteCastlesInCheck.push(i);
-    } else if (piecesPosition[i - 1] === "c" && totalBCastles === 1) {
-      blackCastlesInCheck.push(i);
+    if (PiecesPosition[i - 1] === "C" && TotalWCastles === 1) {
+      WhiteCastlesInCheck.push(i);
+    } else if (PiecesPosition[i - 1] === "c" && TotalBCastles === 1) {
+      BlackCastlesInCheck.push(i);
     }
 
-    if (piecesPosition[i - 1] === "C" && whiteCastlesInCheck.includes(i)) {
+    if (PiecesPosition[i - 1] === "C" && WhiteCastlesInCheck.includes(i)) {
       marksToType = marksToX; //get array squares Castle in check can go
-    } else if (piecesPosition[i - 1] === "c" && blackCastlesInCheck.includes(i)) {
+    } else if (PiecesPosition[i - 1] === "c" && BlackCastlesInCheck.includes(i)) {
       marksToType = marksToX; //get array squares castle in check can go
-    } else if (piecesPosition[i - 1] === "C") {
+    } else if (PiecesPosition[i - 1] === "C") {
       marksToType = marksToC;
-    } else if (piecesPosition[i - 1] === "c") {
+    } else if (PiecesPosition[i - 1] === "c") {
       marksToType = marksToc;
-    } else if (piecesPosition[i - 1] === "P") {
+    } else if (PiecesPosition[i - 1] === "P") {
       marksToType = marksToP;
-    } else if (piecesPosition[i - 1] === "p") {
+    } else if (PiecesPosition[i - 1] === "p") {
       marksToType = marksTop;
-    } else if (piecesPosition[i - 1] === "Q" || piecesPosition[i - 1] === "q") {
+    } else if (PiecesPosition[i - 1] === "Q" || PiecesPosition[i - 1] === "q") {
       marksToType = marksToQ;
-    } else if (piecesPosition[i - 1] === "B" || piecesPosition[i - 1] === "b") {
+    } else if (PiecesPosition[i - 1] === "B" || PiecesPosition[i - 1] === "b") {
       marksToType = marksToB;
-    } else if (piecesPosition[i - 1] === "R" || piecesPosition[i - 1] === "r") {
+    } else if (PiecesPosition[i - 1] === "R" || PiecesPosition[i - 1] === "r") {
       marksToType = marksToR;
-    } else if (piecesPosition[i - 1] === "N" || piecesPosition[i - 1] === "n") {
+    } else if (PiecesPosition[i - 1] === "N" || PiecesPosition[i - 1] === "n") {
       marksToType = marksToN;
     }
 
@@ -123,7 +122,8 @@ function clickSquare(i) {
       let sqB = parseInt(document.getElementById("BL").getAttributeNS(null, "y")) + 480;
       if (markL < sqR && markR > sqL && markT < sqB && markB > sqT) {
         marksOnBoard.push(parseInt(marksToType[p])); //get array marks to be used
-        if (piecesPosition[i - 1] === "B" || piecesPosition[i - 1] === "b" || piecesPosition[i - 1] === "Q" || piecesPosition[i - 1] === "q") {
+
+        if (PiecesPosition[i - 1] === "B" || PiecesPosition[i - 1] === "b" || PiecesPosition[i - 1] === "Q" || PiecesPosition[i - 1] === "q") {
           if (marksToBishopNW.includes(marksToType[p])) {
             marksOnBoardToBishopNW.push(parseInt(marksToType[p]));
           } else if (marksToBishopNE.includes(marksToType[p])) {
@@ -134,7 +134,7 @@ function clickSquare(i) {
             marksOnBoardToBishopSE.push(parseInt(marksToType[p]));
           }
         }
-        if (piecesPosition[i - 1] === "R" || piecesPosition[i - 1] === "r" || piecesPosition[i - 1] === "Q" || piecesPosition[i - 1] === "q") {
+        if (PiecesPosition[i - 1] === "R" || PiecesPosition[i - 1] === "r" || PiecesPosition[i - 1] === "Q" || PiecesPosition[i - 1] === "q") {
           if (marksToRookN.includes(marksToType[p])) {
             marksOnBoardToRookN.push(parseInt(marksToType[p]));
           } else if (marksToRookS.includes(marksToType[p])) {
@@ -153,7 +153,7 @@ function clickSquare(i) {
     marksOnBoardToRookN.reverse();
     marksOnBoardToRookW.reverse();
 
-    //check collisions for each valid mark against all 64 squares on board, break when find it and jump next.
+    //check collisions for each valid mark Against all 64 squares on board, break when find it and jump next.
     let m = 0;
     while (m < marksOnBoard.length) {
       m++;
@@ -164,69 +164,69 @@ function clickSquare(i) {
         let markR = parseInt(document.getElementById("Mark" + marksOnBoard[m - 1]).getAttributeNS(null, "cx")) + 5;
         let markT = parseInt(document.getElementById("Mark" + marksOnBoard[m - 1]).getAttributeNS(null, "cy")) - 5;
         let markB = parseInt(document.getElementById("Mark" + marksOnBoard[m - 1]).getAttributeNS(null, "cy")) + 5;
-        let sqL = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "x"));
-        let sqR = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "x")) + 60;
-        let sqT = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "y"));
-        let sqB = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "y")) + 60;
+        let sqL = parseInt(document.getElementById("butSquare" + n).getAttributeNS(null, "x"));
+        let sqR = parseInt(document.getElementById("butSquare" + n).getAttributeNS(null, "x")) + 60;
+        let sqT = parseInt(document.getElementById("butSquare" + n).getAttributeNS(null, "y"));
+        let sqB = parseInt(document.getElementById("butSquare" + n).getAttributeNS(null, "y")) + 60;
         if (markL < sqR && markR > sqL && markT < sqB && markB > sqT) { //check collisions marks/squares
-          if (piecesPosition[i - 1] === "C") { //CASTLE check if type C
-            if (whiteCastlesInCheck.includes(i)) {
-              if (totalWCastles > 1) {
-                if (piecesPosition[n - 1] !== "O") {
-                  if (piecesPosition[n - 1] !== piecesPosition[n - 1].toUpperCase()) {
+          if (PiecesPosition[i - 1] === "C") { //CASTLE check if type C
+            if (WhiteCastlesInCheck.includes(i)) {
+              if (TotalWCastles > 1) {
+                if (PiecesPosition[n - 1] !== "O") {
+                  if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toUpperCase()) {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else {
                     fillerStroker("disable");
                   }
                 } else {
                   fillerStroker("empty");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 }
               } else {
-                if (totalBCastles === 1 && piecesPosition[n - 1] === "c") {
+                if (TotalBCastles === 1 && PiecesPosition[n - 1] === "c") {
                   fillerStroker("mate");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 } else {
-                  if (piecesPosition[n - 1] !== "O") {
-                    if (landingsAgain === 0 && piecesPosition[n - 1] !== piecesPosition[n - 1].toUpperCase()) {
-                      ghostPiecesPosition = [];
+                  if (PiecesPosition[n - 1] !== "O") {
+                    if (LandingsAgain === 0 && PiecesPosition[n - 1] !== PiecesPosition[n - 1].toUpperCase()) {
+                      GhostPiecesPosition = [];
                       landingInCheck(i, n);
-                      again = 1;
+                      Again = 1;
                     }
-                  } else if (landingsAgain === 0) {
-                    ghostPiecesPosition = [];
+                  } else if (LandingsAgain === 0) {
+                    GhostPiecesPosition = [];
                     landingInCheck(i, n);
-                    again = 1;
+                    Again = 1;
                   }
-                  if (whiteLandingsInCheck.includes(n)) {
+                  if (WhiteLandingsInCheck.includes(n)) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[n - 1] !== "O") {
-                    if (piecesPosition[n - 1] !== piecesPosition[n - 1].toUpperCase()) {
+                  } else if (PiecesPosition[n - 1] !== "O") {
+                    if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toUpperCase()) {
                       fillerStroker("take");
-                      squaresToGo.push(n);
+                      SquaresToGo.push(n);
                     } else {
                       fillerStroker("disable");
                     }
                   } else {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
             } else if (n === i - 9 || n === i - 7) { //check exceptions to special Castle's not in check diagonal moves
-              if (piecesPosition[n - 1] !== "O") { //check if squares to go are not empty
-                if (piecesPosition[n - 1] !== piecesPosition[n - 1].toUpperCase()) { //check if piece on land is enemy
-                  if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if enemy, if b or q to go
+              if (PiecesPosition[n - 1] !== "O") { //check if squares to go are not empty
+                if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toUpperCase()) { //check if piece on land is enemy
+                  if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if enemy, if b or q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //can take enemy pieces
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
-                } else if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if friend, if Q or B to go
+                } else if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if friend, if Q or B to go
                   fillerStroker("turnover");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 } else { //disable to go
                   fillerStroker("disable");
                 }
@@ -234,110 +234,110 @@ function clickSquare(i) {
                 fillerStroker("disable");
               }
             } else if (n === i - 16) { //check if further most square to go ahead is empty
-              if (piecesPosition[i - 9] === "O") { // check if near square ahead is empty
-                if (piecesPosition[n - 1] !== "O") { //check if further square is not empty
-                  if (piecesPosition[n - 1] !== piecesPosition[n - 1].toUpperCase()) { //check if piece on go is enemy
-                    if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if enemy, if b or q to go
+              if (PiecesPosition[i - 9] === "O") { // check if near square ahead is empty
+                if (PiecesPosition[n - 1] !== "O") { //check if further square is not empty
+                  if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toUpperCase()) { //check if piece on go is enemy
+                    if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if enemy, if b or q to go
                       fillerStroker("turnover");
-                      squaresToGo.push(n);
+                      SquaresToGo.push(n);
                     } else { //disable to go
                       fillerStroker("disable");
                     }
                   } else { //if friend
-                    if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if friend, if B or Q to go
+                    if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if friend, if B or Q to go
                       fillerStroker("turnover");
-                      squaresToGo.push(n);
+                      SquaresToGo.push(n);
                     } else { //disable to go
                       fillerStroker("disable");
                     }
                   }
                 } else {
                   fillerStroker("empty");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 }
               } else { //disable to go
                 fillerStroker("disable");
               }
             } else if (n === i - 8) { //check if it is near square
-              if (piecesPosition[n - 1] !== "O") { //check if near square to go ahead is empty
-                if (piecesPosition[n - 1] !== piecesPosition[n - 1].toUpperCase()) { //check if piece on go is enemy
-                  if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if enemy, if b or q to go
+              if (PiecesPosition[n - 1] !== "O") { //check if near square to go ahead is empty
+                if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toUpperCase()) { //check if piece on go is enemy
+                  if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if enemy, if b or q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //disable to go
                     fillerStroker("disable");
                   }
                 } else { //if friend
-                  if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if friend, if B or Q to go
+                  if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if friend, if B or Q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //disable to go
                     fillerStroker("disable");
                   }
                 }
               } else {
                 fillerStroker("empty");
-                squaresToGo.push(n);
+                SquaresToGo.push(n);
               }
             }
-          } else if (piecesPosition[i - 1] === "c") { //castle check if type c
-            if (blackCastlesInCheck.includes(i)) {
-              if (totalBCastles > 1) {
-                if (piecesPosition[n - 1] !== "O") {
-                  if (piecesPosition[n - 1] !== piecesPosition[n - 1].toLowerCase()) {
+          } else if (PiecesPosition[i - 1] === "c") { //castle check if type c
+            if (BlackCastlesInCheck.includes(i)) {
+              if (TotalBCastles > 1) {
+                if (PiecesPosition[n - 1] !== "O") {
+                  if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toLowerCase()) {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else {
                     fillerStroker("disable");
                   }
                 } else {
                   fillerStroker("empty");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 }
               } else {
-                if (totalWCastles === 1 && piecesPosition[n - 1] === "C") {
+                if (TotalWCastles === 1 && PiecesPosition[n - 1] === "C") {
                   fillerStroker("mate");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 } else {
-                  if (piecesPosition[n - 1] !== "O") {
-                    if (landingsAgain === 0 && piecesPosition[n - 1] !== piecesPosition[n - 1].toLowerCase()) {
-                      ghostPiecesPosition = [];
+                  if (PiecesPosition[n - 1] !== "O") {
+                    if (LandingsAgain === 0 && PiecesPosition[n - 1] !== PiecesPosition[n - 1].toLowerCase()) {
+                      GhostPiecesPosition = [];
                       landingInCheck(i, n);
-                      again = 1;
+                      Again = 1;
                     }
-                  } else if (landingsAgain === 0) {
-                    ghostPiecesPosition = [];
+                  } else if (LandingsAgain === 0) {
+                    GhostPiecesPosition = [];
                     landingInCheck(i, n);
-                    again = 1;
+                    Again = 1;
                   }
-                  if (blackLandingsInCheck.includes(n)) {
+                  if (BlackLandingsInCheck.includes(n)) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[n - 1] !== "O") {
-                    if (piecesPosition[n - 1] !== piecesPosition[n - 1].toLowerCase()) {
+                  } else if (PiecesPosition[n - 1] !== "O") {
+                    if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toLowerCase()) {
                       fillerStroker("take");
-                      squaresToGo.push(n);
+                      SquaresToGo.push(n);
                     } else {
                       fillerStroker("disable");
                     }
                   } else {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
             } else if (n === i + 9 || n === i + 7) { //check exceptions to special Castle's not in check diagonal moves
-              if (piecesPosition[n - 1] !== "O") { //check if squares to go are empty
-                if (piecesPosition[n - 1] !== piecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
-                  if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
+              if (PiecesPosition[n - 1] !== "O") { //check if squares to go are empty
+                if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
+                  if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
-                } else if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if friend, if q or b to go
+                } else if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if friend, if q or b to go
                   fillerStroker("turnover");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 } else { //disable to go
                   fillerStroker("disable");
                 }
@@ -345,66 +345,66 @@ function clickSquare(i) {
                 fillerStroker("disable");
               }
             } else if (n === i + 16) { //check if far square to go ahead is empty
-              if (piecesPosition[i + 7] === "O") {
-                if (piecesPosition[n - 1] !== "O") {
-                  if (piecesPosition[n - 1] !== piecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
-                    if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
+              if (PiecesPosition[i + 7] === "O") {
+                if (PiecesPosition[n - 1] !== "O") {
+                  if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
+                    if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
                       fillerStroker("turnover");
-                      squaresToGo.push(n);
+                      SquaresToGo.push(n);
                     } else { //disable to go
                       fillerStroker("disable");
                     }
                   } else { //if friend
-                    if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if friend, if b or q to go
+                    if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if friend, if b or q to go
                       fillerStroker("turnover");
-                      squaresToGo.push(n);
+                      SquaresToGo.push(n);
                     } else { //disable to go
                       fillerStroker("disable");
                     }
                   }
                 } else {
                   fillerStroker("empty");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 }
               } else { //disable to go
                 fillerStroker("disable");
               }
             } else if (n === i + 8) { //check if near square to go ahead is empty
-              if (piecesPosition[n - 1] !== "O") {
-                if (piecesPosition[n - 1] !== piecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
-                  if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
+              if (PiecesPosition[n - 1] !== "O") {
+                if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
+                  if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //disable to go
                     fillerStroker("disable");
                   }
                 } else { //if friend
-                  if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if friend, if b or q to go
+                  if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if friend, if b or q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //disable to go
                     fillerStroker("disable");
                   }
                 }
               } else {
                 fillerStroker("empty");
-                squaresToGo.push(n);
+                SquaresToGo.push(n);
               }
             }
-          } else if (piecesPosition[i - 1] === "P") { //PAWN
+          } else if (PiecesPosition[i - 1] === "P") { //PAWN
             if (n === i - 9 || n === i - 7) { //check exceptions to special Castle's not in check diagonal moves
-              if (piecesPosition[n - 1] !== "O") { //check if squares to go are not empty
-                if (piecesPosition[n - 1] !== piecesPosition[n - 1].toUpperCase()) { //check if piece on land is enemy
-                  if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if enemy, if b or q to go
+              if (PiecesPosition[n - 1] !== "O") { //check if squares to go are not empty
+                if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toUpperCase()) { //check if piece on land is enemy
+                  if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if enemy, if b or q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //can take enemy pieces
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
-                } else if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if friend, if Q or B to go
+                } else if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if friend, if Q or B to go
                   fillerStroker("turnover");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 } else { //disable to go
                   fillerStroker("disable");
                 }
@@ -412,41 +412,41 @@ function clickSquare(i) {
                 fillerStroker("disable");
               }
             } else if (n === i - 8) { //check if it is near square
-              if (piecesPosition[n - 1] !== "O") { //check if near square to go ahead is empty
-                if (piecesPosition[n - 1] !== piecesPosition[n - 1].toUpperCase()) { //check if piece on go is enemy
-                  if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if enemy, if b or q to go
+              if (PiecesPosition[n - 1] !== "O") { //check if near square to go ahead is empty
+                if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toUpperCase()) { //check if piece on go is enemy
+                  if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if enemy, if b or q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //disable to go
                     fillerStroker("disable");
                   }
                 } else { //if friend
-                  if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if friend, if B or Q to go
+                  if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if friend, if B or Q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //disable to go
                     fillerStroker("disable");
                   }
                 }
               } else {
                 fillerStroker("empty");
-                squaresToGo.push(n);
+                SquaresToGo.push(n);
               }
             }
-          } else if (piecesPosition[i - 1] === "p") { //pawn check if type c
+          } else if (PiecesPosition[i - 1] === "p") { //pawn check if type c
             if (n === i + 9 || n === i + 7) { //check exceptions to special Castle's not in check diagonal moves
-              if (piecesPosition[n - 1] !== "O") { //check if squares to go are empty
-                if (piecesPosition[n - 1] !== piecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
-                  if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
+              if (PiecesPosition[n - 1] !== "O") { //check if squares to go are empty
+                if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
+                  if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
-                } else if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if friend, if q or b to go
+                } else if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if friend, if q or b to go
                   fillerStroker("turnover");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 } else { //disable to go
                   fillerStroker("disable");
                 }
@@ -454,28 +454,28 @@ function clickSquare(i) {
                 fillerStroker("disable");
               }
             } else if (n === i + 8) { //check if near square to go ahead is empty
-              if (piecesPosition[n - 1] !== "O") {
-                if (piecesPosition[n - 1] !== piecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
-                  if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
+              if (PiecesPosition[n - 1] !== "O") {
+                if (PiecesPosition[n - 1] !== PiecesPosition[n - 1].toLowerCase()) { //check if piece on go is enemy
+                  if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "Q") { // if enemy, if B or Q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //disable to go
                     fillerStroker("disable");
                   }
                 } else { //if friend
-                  if (piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "q") { // if friend, if b or q to go
+                  if (PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "q") { // if friend, if b or q to go
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   } else { //disable to go
                     fillerStroker("disable");
                   }
                 }
               } else {
                 fillerStroker("empty");
-                squaresToGo.push(n);
+                SquaresToGo.push(n);
               }
             }
-          } else if (piecesPosition[i - 1] === "B" || piecesPosition[i - 1] === "b") { //BbBbBbBbBbBbBb
+          } else if (PiecesPosition[i - 1] === "B" || PiecesPosition[i - 1] === "b") { //BbBbBbBbBbBbBb
             fillerStroker("disable");
             if (marksOnBoardToBishopNW.includes(marksOnBoard[m - 1])) { //NW
               let lineSize = 1;
@@ -487,24 +487,24 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i - (1 + r * 9)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i - (1 + r * 9)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i - (1 + r * 9)] === "O") {
+                  if (PiecesPosition[i - (1 + r * 9)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                     break;
-                  } else if (piecesPosition[i - (1 + r * 9)] === "R" || piecesPosition[i - (1 + r * 9)] === "P" || piecesPosition[i - (1 + r * 9)] === "r" || piecesPosition[i - (1 + r * 9)] === "p") {
+                  } else if (PiecesPosition[i - (1 + r * 9)] === "R" || PiecesPosition[i - (1 + r * 9)] === "P" || PiecesPosition[i - (1 + r * 9)] === "r" || PiecesPosition[i - (1 + r * 9)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i - (1 + r * 9)] === piecesPosition[i - (1 + r * 9)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i - (1 + r * 9)] === PiecesPosition[i - (1 + r * 9)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i - (1 + r * 9)] === piecesPosition[i - (1 + r * 9)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i - (1 + r * 9)] === PiecesPosition[i - (1 + r * 9)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -518,23 +518,23 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i - (1 + r * 7)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i - (1 + r * 7)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i - (1 + r * 7)] === "O") {
+                  if (PiecesPosition[i - (1 + r * 7)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - (1 + r * 7)] === "R" || piecesPosition[i - (1 + r * 7)] === "P" || piecesPosition[i - (1 + r * 7)] === "r" || piecesPosition[i - (1 + r * 7)] === "p") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - (1 + r * 7)] === "R" || PiecesPosition[i - (1 + r * 7)] === "P" || PiecesPosition[i - (1 + r * 7)] === "r" || PiecesPosition[i - (1 + r * 7)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i - (1 + r * 7)] === piecesPosition[i - (1 + r * 7)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i - (1 + r * 7)] === PiecesPosition[i - (1 + r * 7)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i - (1 + r * 7)] === piecesPosition[i - (1 + r * 7)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i - (1 + r * 7)] === PiecesPosition[i - (1 + r * 7)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -548,23 +548,23 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i + (r * 7 - 1)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i + (r * 7 - 1)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i + (r * 7 - 1)] === "O") {
+                  if (PiecesPosition[i + (r * 7 - 1)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i + (r * 7 - 1)] === "R" || piecesPosition[i + (r * 7 - 1)] === "P" || piecesPosition[i + (r * 7 - 1)] === "r" || piecesPosition[i + (r * 7 - 1)] === "p") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i + (r * 7 - 1)] === "R" || PiecesPosition[i + (r * 7 - 1)] === "P" || PiecesPosition[i + (r * 7 - 1)] === "r" || PiecesPosition[i + (r * 7 - 1)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i + (r * 7 - 1)] === piecesPosition[i + (r * 7 - 1)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i + (r * 7 - 1)] === PiecesPosition[i + (r * 7 - 1)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i + (r * 7 - 1)] === piecesPosition[i + (r * 7 - 1)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i + (r * 7 - 1)] === PiecesPosition[i + (r * 7 - 1)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -578,28 +578,28 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i + (r * 9 - 1)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i + (r * 9 - 1)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i + (r * 9 - 1)] === "O") {
+                  if (PiecesPosition[i + (r * 9 - 1)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i + (r * 9 - 1)] === "R" || piecesPosition[i + (r * 9 - 1)] === "P" || piecesPosition[i + (r * 9 - 1)] === "r" || piecesPosition[i + (r * 9 - 1)] === "p") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i + (r * 9 - 1)] === "R" || PiecesPosition[i + (r * 9 - 1)] === "P" || PiecesPosition[i + (r * 9 - 1)] === "r" || PiecesPosition[i + (r * 9 - 1)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i + (r * 9 - 1)] === piecesPosition[i + (r * 9 - 1)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i + (r * 9 - 1)] === PiecesPosition[i + (r * 9 - 1)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i + (r * 9 - 1)] === piecesPosition[i + (r * 9 - 1)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i + (r * 9 - 1)] === PiecesPosition[i + (r * 9 - 1)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
             }
-          } else if (piecesPosition[i - 1] === "R" || piecesPosition[i - 1] === "r") { //RrRr
+          } else if (PiecesPosition[i - 1] === "R" || PiecesPosition[i - 1] === "r") { //RrRr
             fillerStroker("disable");
             if (marksOnBoardToRookN.includes(marksOnBoard[m - 1])) { //NW
               let lineSize = 1;
@@ -611,24 +611,24 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i - (1 + r * 8)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i - (1 + r * 8)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i - (1 + r * 8)] === "O") {
+                  if (PiecesPosition[i - (1 + r * 8)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                     break;
-                  } else if (piecesPosition[i - (1 + r * 8)] === "B" || piecesPosition[i - (1 + r * 8)] === "b" || piecesPosition[i - (1 + r * 8)] === "N" || piecesPosition[i - (1 + r * 8)] === "n") {
+                  } else if (PiecesPosition[i - (1 + r * 8)] === "B" || PiecesPosition[i - (1 + r * 8)] === "b" || PiecesPosition[i - (1 + r * 8)] === "N" || PiecesPosition[i - (1 + r * 8)] === "n") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i - (1 + r * 8)] === piecesPosition[i - (1 + r * 8)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i - (1 + r * 8)] === PiecesPosition[i - (1 + r * 8)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i - (1 + r * 8)] === piecesPosition[i - (1 + r * 8)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i - (1 + r * 8)] === PiecesPosition[i - (1 + r * 8)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -642,23 +642,23 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i - (1 + r)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i - (1 + r)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i - (1 + r)] === "O") {
+                  if (PiecesPosition[i - (1 + r)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - (1 + r)] === "B" || piecesPosition[i - (1 + r)] === "b" || piecesPosition[i - (1 + r)] === "N" || piecesPosition[i - (1 + r)] === "n") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - (1 + r)] === "B" || PiecesPosition[i - (1 + r)] === "b" || PiecesPosition[i - (1 + r)] === "N" || PiecesPosition[i - (1 + r)] === "n") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i - (1 + r)] === piecesPosition[i - (1 + r)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i - (1 + r)] === PiecesPosition[i - (1 + r)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i - (1 + r)] === piecesPosition[i - (1 + r)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i - (1 + r)] === PiecesPosition[i - (1 + r)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -672,23 +672,23 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i + (r - 1)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i + (r - 1)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i + (r - 1)] === "O") {
+                  if (PiecesPosition[i + (r - 1)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i + (r - 1)] === "B" || piecesPosition[i + (r - 1)] === "b" || piecesPosition[i + (r - 1)] === "N" || piecesPosition[i + (r - 1)] === "n") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i + (r - 1)] === "B" || PiecesPosition[i + (r - 1)] === "b" || PiecesPosition[i + (r - 1)] === "N" || PiecesPosition[i + (r - 1)] === "n") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i + (r - 1)] === piecesPosition[i + (r - 1)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i + (r - 1)] === PiecesPosition[i + (r - 1)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i + (r - 1)] === piecesPosition[i + (r - 1)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i + (r - 1)] === PiecesPosition[i + (r - 1)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -702,28 +702,28 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i + (r * 8 - 1)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i + (r * 8 - 1)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i + (r * 8 - 1)] === "O") {
+                  if (PiecesPosition[i + (r * 8 - 1)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i + (r * 8 - 1)] === "B" || piecesPosition[i + (r * 8 - 1)] === "b" || piecesPosition[i + (r * 8 - 1)] === "N" || piecesPosition[i + (r * 8 - 1)] === "n") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i + (r * 8 - 1)] === "B" || PiecesPosition[i + (r * 8 - 1)] === "b" || PiecesPosition[i + (r * 8 - 1)] === "N" || PiecesPosition[i + (r * 8 - 1)] === "n") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i + (r * 8 - 1)] === piecesPosition[i + (r * 8 - 1)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i + (r * 8 - 1)] === PiecesPosition[i + (r * 8 - 1)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i + (r * 8 - 1)] === piecesPosition[i + (r * 8 - 1)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i + (r * 8 - 1)] === PiecesPosition[i + (r * 8 - 1)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
             }
-          } else if (piecesPosition[i - 1] === "Q" || piecesPosition[i - 1] === "q") { //QUEEN queen
+          } else if (PiecesPosition[i - 1] === "Q" || PiecesPosition[i - 1] === "q") { //QUEEN queen
             fillerStroker("disable");
             if (marksOnBoardToBishopNW.includes(marksOnBoard[m - 1])) { //NW
               let lineSize = 1;
@@ -735,24 +735,24 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i - (1 + r * 9)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i - (1 + r * 9)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i - (1 + r * 9)] === "O") {
+                  if (PiecesPosition[i - (1 + r * 9)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                     break;
-                  } else if (piecesPosition[i - (1 + r * 9)] === "R" || piecesPosition[i - (1 + r * 9)] === "P" || piecesPosition[i - (1 + r * 9)] === "r" || piecesPosition[i - (1 + r * 9)] === "p") {
+                  } else if (PiecesPosition[i - (1 + r * 9)] === "R" || PiecesPosition[i - (1 + r * 9)] === "P" || PiecesPosition[i - (1 + r * 9)] === "r" || PiecesPosition[i - (1 + r * 9)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i - (1 + r * 9)] === piecesPosition[i - (1 + r * 9)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i - (1 + r * 9)] === PiecesPosition[i - (1 + r * 9)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i - (1 + r * 9)] === piecesPosition[i - (1 + r * 9)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i - (1 + r * 9)] === PiecesPosition[i - (1 + r * 9)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -766,23 +766,23 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i - (1 + r * 7)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i - (1 + r * 7)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i - (1 + r * 7)] === "O") {
+                  if (PiecesPosition[i - (1 + r * 7)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - (1 + r * 7)] === "R" || piecesPosition[i - (1 + r * 7)] === "P" || piecesPosition[i - (1 + r * 7)] === "r" || piecesPosition[i - (1 + r * 7)] === "p") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - (1 + r * 7)] === "R" || PiecesPosition[i - (1 + r * 7)] === "P" || PiecesPosition[i - (1 + r * 7)] === "r" || PiecesPosition[i - (1 + r * 7)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i - (1 + r * 7)] === piecesPosition[i - (1 + r * 7)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i - (1 + r * 7)] === PiecesPosition[i - (1 + r * 7)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i - (1 + r * 7)] === piecesPosition[i - (1 + r * 7)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i - (1 + r * 7)] === PiecesPosition[i - (1 + r * 7)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -796,23 +796,23 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i + (r * 7 - 1)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i + (r * 7 - 1)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i + (r * 7 - 1)] === "O") {
+                  if (PiecesPosition[i + (r * 7 - 1)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i + (r * 7 - 1)] === "R" || piecesPosition[i + (r * 7 - 1)] === "P" || piecesPosition[i + (r * 7 - 1)] === "r" || piecesPosition[i + (r * 7 - 1)] === "p") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i + (r * 7 - 1)] === "R" || PiecesPosition[i + (r * 7 - 1)] === "P" || PiecesPosition[i + (r * 7 - 1)] === "r" || PiecesPosition[i + (r * 7 - 1)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i + (r * 7 - 1)] === piecesPosition[i + (r * 7 - 1)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i + (r * 7 - 1)] === PiecesPosition[i + (r * 7 - 1)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i + (r * 7 - 1)] === piecesPosition[i + (r * 7 - 1)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i + (r * 7 - 1)] === PiecesPosition[i + (r * 7 - 1)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -826,23 +826,23 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i + (r * 9 - 1)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i + (r * 9 - 1)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i + (r * 9 - 1)] === "O") {
+                  if (PiecesPosition[i + (r * 9 - 1)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i + (r * 9 - 1)] === "R" || piecesPosition[i + (r * 9 - 1)] === "P" || piecesPosition[i + (r * 9 - 1)] === "r" || piecesPosition[i + (r * 9 - 1)] === "p") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i + (r * 9 - 1)] === "R" || PiecesPosition[i + (r * 9 - 1)] === "P" || PiecesPosition[i + (r * 9 - 1)] === "r" || PiecesPosition[i + (r * 9 - 1)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i + (r * 9 - 1)] === piecesPosition[i + (r * 9 - 1)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i + (r * 9 - 1)] === PiecesPosition[i + (r * 9 - 1)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i + (r * 9 - 1)] === piecesPosition[i + (r * 9 - 1)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i + (r * 9 - 1)] === PiecesPosition[i + (r * 9 - 1)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -857,24 +857,24 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i - (1 + r * 8)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i - (1 + r * 8)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i - (1 + r * 8)] === "O") {
+                  if (PiecesPosition[i - (1 + r * 8)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                     break;
-                  } else if (piecesPosition[i - (1 + r * 8)] === "R" || piecesPosition[i - (1 + r * 8)] === "r" || piecesPosition[i - (1 + r * 8)] === "P" || piecesPosition[i - (1 + r * 8)] === "p") {
+                  } else if (PiecesPosition[i - (1 + r * 8)] === "R" || PiecesPosition[i - (1 + r * 8)] === "r" || PiecesPosition[i - (1 + r * 8)] === "P" || PiecesPosition[i - (1 + r * 8)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i - (1 + r * 8)] === piecesPosition[i - (1 + r * 8)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i - (1 + r * 8)] === PiecesPosition[i - (1 + r * 8)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i - (1 + r * 8)] === piecesPosition[i - (1 + r * 8)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i - (1 + r * 8)] === PiecesPosition[i - (1 + r * 8)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -888,23 +888,23 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i - (1 + r)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i - (1 + r)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i - (1 + r)] === "O") {
+                  if (PiecesPosition[i - (1 + r)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - (1 + r)] === "R" || piecesPosition[i - (1 + r)] === "r" || piecesPosition[i - (1 + r)] === "P" || piecesPosition[i - (1 + r)] === "p") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - (1 + r)] === "R" || PiecesPosition[i - (1 + r)] === "r" || PiecesPosition[i - (1 + r)] === "P" || PiecesPosition[i - (1 + r)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i - (1 + r)] === piecesPosition[i - (1 + r)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i - (1 + r)] === PiecesPosition[i - (1 + r)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i - (1 + r)] === piecesPosition[i - (1 + r)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i - (1 + r)] === PiecesPosition[i - (1 + r)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -918,23 +918,23 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i + (r - 1)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i + (r - 1)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i + (r - 1)] === "O") {
+                  if (PiecesPosition[i + (r - 1)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i + (r - 1)] === "R" || piecesPosition[i + (r - 1)] === "r" || piecesPosition[i + (r - 1)] === "P" || piecesPosition[i + (r - 1)] === "p") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i + (r - 1)] === "R" || PiecesPosition[i + (r - 1)] === "r" || PiecesPosition[i + (r - 1)] === "P" || PiecesPosition[i + (r - 1)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i + (r - 1)] === piecesPosition[i + (r - 1)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i + (r - 1)] === PiecesPosition[i + (r - 1)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i + (r - 1)] === piecesPosition[i + (r - 1)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i + (r - 1)] === PiecesPosition[i + (r - 1)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
@@ -948,54 +948,54 @@ function clickSquare(i) {
               let r = 0;
               while (r < lineSize) {
                 r++;
-                if (piecesPosition[i + (r * 8 - 1)] !== "O" && r < lineSize) { //following line
+                if (PiecesPosition[i + (r * 8 - 1)] !== "O" && r < lineSize) { //following line
                   break;
                 }
                 if (r === lineSize) {
-                  if (piecesPosition[i + (r * 8 - 1)] === "O") {
+                  if (PiecesPosition[i + (r * 8 - 1)] === "O") {
                     fillerStroker("empty");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i + (r * 8 - 1)] === "R" || piecesPosition[i + (r * 8 - 1)] === "r" || piecesPosition[i + (r * 8 - 1)] === "P" || piecesPosition[i + (r * 8 - 1)] === "p") {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i + (r * 8 - 1)] === "R" || PiecesPosition[i + (r * 8 - 1)] === "r" || PiecesPosition[i + (r * 8 - 1)] === "P" || PiecesPosition[i + (r * 8 - 1)] === "p") {
                     fillerStroker("turnover");
-                    squaresToGo.push(n);
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() && piecesPosition[i + (r * 8 - 1)] === piecesPosition[i + (r * 8 - 1)].toUpperCase()) {
+                    SquaresToGo.push(n);
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() && PiecesPosition[i + (r * 8 - 1)] === PiecesPosition[i + (r * 8 - 1)].toUpperCase()) {
                     fillerStroker("disable");
-                  } else if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase() && piecesPosition[i + (r * 8 - 1)] === piecesPosition[i + (r * 8 - 1)].toLowerCase()) {
+                  } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase() && PiecesPosition[i + (r * 8 - 1)] === PiecesPosition[i + (r * 8 - 1)].toLowerCase()) {
                     fillerStroker("disable");
                   } else {
                     fillerStroker("take");
-                    squaresToGo.push(n);
+                    SquaresToGo.push(n);
                   }
                 }
               }
             }
-          } else if (piecesPosition[i - 1] === "N" || piecesPosition[i - 1] === "n") { //KNIGHT knight
-            if (piecesPosition[n - 1] !== "O") { //check if squares to go are not empty
-              if (piecesPosition[n - 1] === piecesPosition[n - 1].toUpperCase() && piecesPosition[i - 1] === piecesPosition[i - 1].toUpperCase() || piecesPosition[n - 1] === piecesPosition[n - 1].toLowerCase() && piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase()) { //check if piece on land is friend
-                if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "Q" || piecesPosition[n - 1] === "q") { // if friend, if b or q to go
+          } else if (PiecesPosition[i - 1] === "N" || PiecesPosition[i - 1] === "n") { //KNIGHT knight
+            if (PiecesPosition[n - 1] !== "O") { //check if squares to go are not empty
+              if (PiecesPosition[n - 1] === PiecesPosition[n - 1].toUpperCase() && PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase() || PiecesPosition[n - 1] === PiecesPosition[n - 1].toLowerCase() && PiecesPosition[i - 1] === PiecesPosition[i - 1].toLowerCase()) { //check if piece on land is friend
+                if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "Q" || PiecesPosition[n - 1] === "q") { // if friend, if b or q to go
                   fillerStroker("turnover");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 } else { //cant go on friendly square
                   fillerStroker("disable");
                 }
               } else {
-                if (piecesPosition[n - 1] === "B" || piecesPosition[n - 1] === "b" || piecesPosition[n - 1] === "Q" || piecesPosition[n - 1] === "q") { // if enemy, if b or q to go
+                if (PiecesPosition[n - 1] === "B" || PiecesPosition[n - 1] === "b" || PiecesPosition[n - 1] === "Q" || PiecesPosition[n - 1] === "q") { // if enemy, if b or q to go
                   fillerStroker("turnover");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 } else { //attack enemy
                   fillerStroker("take");
-                  squaresToGo.push(n);
+                  SquaresToGo.push(n);
                 }
               }
             } else { //go empty square
               fillerStroker("empty");
-              squaresToGo.push(n);
+              SquaresToGo.push(n);
             }
           } else { //temporary to develop
             fillerStroker("colorError");
           }
-          document.getElementById("Mark" + marksOnBoard[m - 1]).setAttributeNS(null, "fill", filler);
-          document.getElementById("Mark" + marksOnBoard[m - 1]).setAttributeNS(null, "stroke", stroker);
+          document.getElementById("Mark" + marksOnBoard[m - 1]).setAttributeNS(null, "fill", Filler);
+          document.getElementById("Mark" + marksOnBoard[m - 1]).setAttributeNS(null, "stroke", Stroker);
           n = 64; //breaker. dont need look for all 64 squares, just until find the square we are searching for.
         }
       }
@@ -1003,7 +1003,7 @@ function clickSquare(i) {
   } else { //clear marks
     unClickSquare();
   }
-  if (again === 1) {
-    landingsAgain = 1;
+  if (Again === 1) {
+    LandingsAgain = 1;
   }
 }

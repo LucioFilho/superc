@@ -4,30 +4,16 @@ function uncheckCastles() {
   let k = 0;
   while (k < 64) {
 
-    if (verseReverse === "wb") {
-      if (piecesPosition[k] === "C") {
-        document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
-        document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
-        document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(0,0,0,1.0)");
-      }
+    if (PiecesPosition[k] === "C") {
+      document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
+      document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
+      document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(0,0,0,1.0)");
+    }
 
-      if (piecesPosition[k] === "c") {
-        document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
-        document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
-        document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(255,255,255,1.0)");
-      }
-    } else {
-      if (piecesPosition[k] === "c") {
-        document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
-        document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(0,0,0,1.0)");
-        document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(0,0,0,1.0)");
-      }
-
-      if (piecesPosition[k] === "C") {
-        document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
-        document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
-        document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(255,255,255,1.0)");
-      }
+    if (PiecesPosition[k] === "c") {
+      document.getElementById("extA" + extPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
+      document.getElementById("midA" + midPiecesPosition[k]).setAttributeNS(null, "stroke", "rgba(255,255,255,1.0)");
+      document.getElementById("intA" + intPiecesPosition[k]).setAttributeNS(null, "fill", "rgba(255,255,255,1.0)");
     }
 
     k++;
@@ -42,22 +28,22 @@ function markCastleInCheck(n) {
 }
 
 function blackC(n) {
-  if (blackCastlesInCheck.includes(n) === false) {
-    blackCastlesInCheck.push(parseInt(n));
+  if (BlackCastlesInCheck.includes(n) === false) {
+    BlackCastlesInCheck.push(parseInt(n));
     markCastleInCheck(n);
   }
 }
 
 function whiteC(n) {
-  if (whiteCastlesInCheck.includes(n) === false) {
-    whiteCastlesInCheck.push(parseInt(n));
+  if (WhiteCastlesInCheck.includes(n) === false) {
+    WhiteCastlesInCheck.push(parseInt(n));
     markCastleInCheck(n);
   }
 }
 
 function castlesInCheck() {
-  whiteCastlesInCheck = [];
-  blackCastlesInCheck = [];
+  WhiteCastlesInCheck = [];
+  BlackCastlesInCheck = [];
 
   //clear castles in check marksTo
   uncheckCastles();
@@ -78,11 +64,11 @@ function castlesInCheck() {
     let undercy113;
     let xButSq;
     let yButSq;
-    let xMove;
-    let yMove;
+    let xMove = 0;
+    let yMove = 0;
     let marksToType = [];
     let marksOnBoard = [];
-    let pP = piecesPosition[i - 1];
+    let pP = PiecesPosition[i - 1];
 
     //marks positioning
     undercx113 = document.getElementById("underMark113").getAttribute("cx");
@@ -98,8 +84,6 @@ function castlesInCheck() {
     } else if (xButSq > undercx113 - 30) {
       xMove = (xButSq - undercx113) + 30;
       underxyMover("xPositive", xMove, yMove);
-    } else {
-      xMove = 0;
     }
 
     if (yButSq < undercy113 - 30) {
@@ -108,8 +92,6 @@ function castlesInCheck() {
     } else if (yButSq > undercy113 - 30) {
       yMove = (yButSq - undercy113) + 30;
       underxyMover("yPositive", xMove, yMove);
-    } else {
-      yMove = 0;
     }
 
     // select only marks by type and inside the board
@@ -133,13 +115,13 @@ function castlesInCheck() {
           marksToType = marksToN;
         }
       } else if (tripleCheck === 1 || tripleCheck === 2) {
-        if (pP === "C" && whiteCastlesInCheck.includes(i)) {
+        if (pP === "C" && WhiteCastlesInCheck.includes(i)) {
           marksToType = marksToX;
-        } else if (pP === "C" && totalBCastles === 1) {
+        } else if (pP === "C" && TotalBCastles === 1) {
           marksToType = marksToX;
-        } else if (pP === "c" && blackCastlesInCheck.includes(i)) {
+        } else if (pP === "c" && BlackCastlesInCheck.includes(i)) {
           marksToType = marksToX;
-        } else if (pP === "c" && totalWCastles === 1) {
+        } else if (pP === "c" && TotalWCastles === 1) {
           marksToType = marksToX;
         } else if (pP === "C") {
           marksToType = marksToC;
@@ -209,34 +191,34 @@ function castlesInCheck() {
         let n = 0;
         while (n < 64) {
           n++;
-          let pPn = piecesPosition[n - 1];
+          let pPn = PiecesPosition[n - 1];
           let markL = parseInt(document.getElementById("underMark" + marksOnBoard[m - 1]).getAttributeNS(null, "cx")) - 5;
           let markR = parseInt(document.getElementById("underMark" + marksOnBoard[m - 1]).getAttributeNS(null, "cx")) + 5;
           let markT = parseInt(document.getElementById("underMark" + marksOnBoard[m - 1]).getAttributeNS(null, "cy")) - 5;
           let markB = parseInt(document.getElementById("underMark" + marksOnBoard[m - 1]).getAttributeNS(null, "cy")) + 5;
-          let sqL = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "x"));
-          let sqR = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "x")) + 60;
-          let sqT = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "y"));
-          let sqB = parseInt(document.getElementById("Square" + n).getAttributeNS(null, "y")) + 60;
+          let sqL = parseInt(document.getElementById("butSquare" + n).getAttributeNS(null, "x"));
+          let sqR = parseInt(document.getElementById("butSquare" + n).getAttributeNS(null, "x")) + 60;
+          let sqT = parseInt(document.getElementById("butSquare" + n).getAttributeNS(null, "y"));
+          let sqB = parseInt(document.getElementById("butSquare" + n).getAttributeNS(null, "y")) + 60;
           if (markL < sqR && markR > sqL && markT < sqB && markB > sqT) { //check collisions marks/squares
             if (pP === "C") { //CASTLE check if type C
               if (pPn === "c" && n !== i - 16 && (n === i - 7 || n === i - 9)) { //check exceptions to special Castle's not in check diagonal moves
                 blackC(n);
               }
-              if (pPn === "c" && n !== i - 16 && (whiteCastlesInCheck.includes(i) || totalWCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
+              if (pPn === "c" && n !== i - 16 && (WhiteCastlesInCheck.includes(i) || TotalWCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
                 blackC(n);
               }
-              if (pPn === "c" && n !== i - 16 && (blackCastlesInCheck.includes(n) || totalBCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
+              if (pPn === "c" && n !== i - 16 && (BlackCastlesInCheck.includes(n) || TotalBCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
                 blackC(n);
               }
             } else if (pP === "c") { //castle check if type c
               if (pPn === "C" && n !== i + 16 && (n === i + 7 || n === i + 9)) { //check exceptions to special Castle's not in check diagonal moves
                 whiteC(n);
               }
-              if (pPn === "C" && n !== i + 16 && (blackCastlesInCheck.includes(i) || totalBCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
+              if (pPn === "C" && n !== i + 16 && (BlackCastlesInCheck.includes(i) || TotalBCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
                 whiteC(n);
               }
-              if (pPn === "C" && n !== i + 16 && (whiteCastlesInCheck.includes(n) || totalWCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
+              if (pPn === "C" && n !== i + 16 && (WhiteCastlesInCheck.includes(n) || TotalWCastles === 1)) { //check exceptions to special Castle's not in check diagonal moves
                 whiteC(n);
               }
             } else if (tripleCheck === 0) {
@@ -265,14 +247,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i - (1 + r * 9)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i - (1 + r * 9)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i - (1 + r * 9)] === "C" || piecesPosition[i - (1 + r * 9)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i - (1 + r * 9)] === piecesPosition[i - (1 + r * 9)].toLowerCase()) {
+                      if (PiecesPosition[i - (1 + r * 9)] === "C" || PiecesPosition[i - (1 + r * 9)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i - (1 + r * 9)] === PiecesPosition[i - (1 + r * 9)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i - (1 + r * 9)] === piecesPosition[i - (1 + r * 9)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i - (1 + r * 9)] === PiecesPosition[i - (1 + r * 9)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -288,14 +270,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i - (1 + r * 7)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i - (1 + r * 7)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i - (1 + r * 7)] === "C" || piecesPosition[i - (1 + r * 7)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i - (1 + r * 7)] === piecesPosition[i - (1 + r * 7)].toLowerCase()) {
+                      if (PiecesPosition[i - (1 + r * 7)] === "C" || PiecesPosition[i - (1 + r * 7)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i - (1 + r * 7)] === PiecesPosition[i - (1 + r * 7)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i - (1 + r * 7)] === piecesPosition[i - (1 + r * 7)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i - (1 + r * 7)] === PiecesPosition[i - (1 + r * 7)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -311,14 +293,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i + (r * 7 - 1)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i + (r * 7 - 1)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i + (r * 7 - 1)] === "C" || piecesPosition[i + (r * 7 - 1)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i + (r * 7 - 1)] === piecesPosition[i + (r * 7 - 1)].toLowerCase()) {
+                      if (PiecesPosition[i + (r * 7 - 1)] === "C" || PiecesPosition[i + (r * 7 - 1)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i + (r * 7 - 1)] === PiecesPosition[i + (r * 7 - 1)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i + (r * 7 - 1)] === piecesPosition[i + (r * 7 - 1)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i + (r * 7 - 1)] === PiecesPosition[i + (r * 7 - 1)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -334,14 +316,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i + (r * 9 - 1)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i + (r * 9 - 1)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i + (r * 9 - 1)] === "C" || piecesPosition[i + (r * 9 - 1)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i + (r * 9 - 1)] === piecesPosition[i + (r * 9 - 1)].toLowerCase()) {
+                      if (PiecesPosition[i + (r * 9 - 1)] === "C" || PiecesPosition[i + (r * 9 - 1)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i + (r * 9 - 1)] === PiecesPosition[i + (r * 9 - 1)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i + (r * 9 - 1)] === piecesPosition[i + (r * 9 - 1)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i + (r * 9 - 1)] === PiecesPosition[i + (r * 9 - 1)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -359,14 +341,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i - (1 + r * 8)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i - (1 + r * 8)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i - (1 + r * 8)] === "C" || piecesPosition[i - (1 + r * 8)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i - (1 + r * 8)] === piecesPosition[i - (1 + r * 8)].toLowerCase()) {
+                      if (PiecesPosition[i - (1 + r * 8)] === "C" || PiecesPosition[i - (1 + r * 8)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i - (1 + r * 8)] === PiecesPosition[i - (1 + r * 8)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i - (1 + r * 8)] === piecesPosition[i - (1 + r * 8)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i - (1 + r * 8)] === PiecesPosition[i - (1 + r * 8)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -382,14 +364,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i - (1 + r)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i - (1 + r)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i - (1 + r)] === "C" || piecesPosition[i - (1 + r)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i - (1 + r)] === piecesPosition[i - (1 + r)].toLowerCase()) {
+                      if (PiecesPosition[i - (1 + r)] === "C" || PiecesPosition[i - (1 + r)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i - (1 + r)] === PiecesPosition[i - (1 + r)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i - (1 + r)] === piecesPosition[i - (1 + r)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i - (1 + r)] === PiecesPosition[i - (1 + r)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -405,14 +387,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i + (r - 1)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i + (r - 1)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i + (r - 1)] === "C" || piecesPosition[i + (r - 1)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i + (r - 1)] === piecesPosition[i + (r - 1)].toLowerCase()) {
+                      if (PiecesPosition[i + (r - 1)] === "C" || PiecesPosition[i + (r - 1)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i + (r - 1)] === PiecesPosition[i + (r - 1)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i + (r - 1)] === piecesPosition[i + (r - 1)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i + (r - 1)] === PiecesPosition[i + (r - 1)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -428,14 +410,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i + (r * 8 - 1)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i + (r * 8 - 1)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i + (r * 8 - 1)] === "C" || piecesPosition[i + (r * 8 - 1)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i + (r * 8 - 1)] === piecesPosition[i + (r * 8 - 1)].toLowerCase()) {
+                      if (PiecesPosition[i + (r * 8 - 1)] === "C" || PiecesPosition[i + (r * 8 - 1)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i + (r * 8 - 1)] === PiecesPosition[i + (r * 8 - 1)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i + (r * 8 - 1)] === piecesPosition[i + (r * 8 - 1)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i + (r * 8 - 1)] === PiecesPosition[i + (r * 8 - 1)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -454,14 +436,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i - (1 + r * 9)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i - (1 + r * 9)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i - (1 + r * 9)] === "C" || piecesPosition[i - (1 + r * 9)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i - (1 + r * 9)] === piecesPosition[i - (1 + r * 9)].toLowerCase()) {
+                      if (PiecesPosition[i - (1 + r * 9)] === "C" || PiecesPosition[i - (1 + r * 9)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i - (1 + r * 9)] === PiecesPosition[i - (1 + r * 9)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i - (1 + r * 9)] === piecesPosition[i - (1 + r * 9)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i - (1 + r * 9)] === PiecesPosition[i - (1 + r * 9)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -477,14 +459,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i - (1 + r * 7)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i - (1 + r * 7)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i - (1 + r * 7)] === "C" || piecesPosition[i - (1 + r * 7)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i - (1 + r * 7)] === piecesPosition[i - (1 + r * 7)].toLowerCase()) {
+                      if (PiecesPosition[i - (1 + r * 7)] === "C" || PiecesPosition[i - (1 + r * 7)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i - (1 + r * 7)] === PiecesPosition[i - (1 + r * 7)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i - (1 + r * 7)] === piecesPosition[i - (1 + r * 7)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i - (1 + r * 7)] === PiecesPosition[i - (1 + r * 7)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -500,14 +482,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i + (r * 7 - 1)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i + (r * 7 - 1)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i + (r * 7 - 1)] === "C" || piecesPosition[i + (r * 7 - 1)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i + (r * 7 - 1)] === piecesPosition[i + (r * 7 - 1)].toLowerCase()) {
+                      if (PiecesPosition[i + (r * 7 - 1)] === "C" || PiecesPosition[i + (r * 7 - 1)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i + (r * 7 - 1)] === PiecesPosition[i + (r * 7 - 1)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i + (r * 7 - 1)] === piecesPosition[i + (r * 7 - 1)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i + (r * 7 - 1)] === PiecesPosition[i + (r * 7 - 1)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -523,14 +505,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i + (r * 9 - 1)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i + (r * 9 - 1)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i + (r * 9 - 1)] === "C" || piecesPosition[i + (r * 9 - 1)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i + (r * 9 - 1)] === piecesPosition[i + (r * 9 - 1)].toLowerCase()) {
+                      if (PiecesPosition[i + (r * 9 - 1)] === "C" || PiecesPosition[i + (r * 9 - 1)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i + (r * 9 - 1)] === PiecesPosition[i + (r * 9 - 1)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i + (r * 9 - 1)] === piecesPosition[i + (r * 9 - 1)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i + (r * 9 - 1)] === PiecesPosition[i + (r * 9 - 1)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -547,14 +529,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i - (1 + r * 8)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i - (1 + r * 8)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i - (1 + r * 8)] === "C" || piecesPosition[i - (1 + r * 8)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i - (1 + r * 8)] === piecesPosition[i - (1 + r * 8)].toLowerCase()) {
+                      if (PiecesPosition[i - (1 + r * 8)] === "C" || PiecesPosition[i - (1 + r * 8)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i - (1 + r * 8)] === PiecesPosition[i - (1 + r * 8)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i - (1 + r * 8)] === piecesPosition[i - (1 + r * 8)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i - (1 + r * 8)] === PiecesPosition[i - (1 + r * 8)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -570,14 +552,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i - (1 + r)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i - (1 + r)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i - (1 + r)] === "C" || piecesPosition[i - (1 + r)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i - (1 + r)] === piecesPosition[i - (1 + r)].toLowerCase()) {
+                      if (PiecesPosition[i - (1 + r)] === "C" || PiecesPosition[i - (1 + r)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i - (1 + r)] === PiecesPosition[i - (1 + r)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i - (1 + r)] === piecesPosition[i - (1 + r)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i - (1 + r)] === PiecesPosition[i - (1 + r)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -593,14 +575,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i + (r - 1)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i + (r - 1)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i + (r - 1)] === "C" || piecesPosition[i + (r - 1)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i + (r - 1)] === piecesPosition[i + (r - 1)].toLowerCase()) {
+                      if (PiecesPosition[i + (r - 1)] === "C" || PiecesPosition[i + (r - 1)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i + (r - 1)] === PiecesPosition[i + (r - 1)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i + (r - 1)] === piecesPosition[i + (r - 1)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i + (r - 1)] === PiecesPosition[i + (r - 1)].toUpperCase()) {
                           whiteC(n);
                         }
                       }
@@ -616,14 +598,14 @@ function castlesInCheck() {
                   let r = 0;
                   while (r < lineSize) {
                     r++;
-                    if (piecesPosition[i + (r * 8 - 1)] !== "O" && r < lineSize) { //following line
+                    if (PiecesPosition[i + (r * 8 - 1)] !== "O" && r < lineSize) { //following line
                       break;
                     }
                     if (r === lineSize) {
-                      if (piecesPosition[i + (r * 8 - 1)] === "C" || piecesPosition[i + (r * 8 - 1)] === "c") {
-                        if (pP === pP.toUpperCase() && piecesPosition[i + (r * 8 - 1)] === piecesPosition[i + (r * 8 - 1)].toLowerCase()) {
+                      if (PiecesPosition[i + (r * 8 - 1)] === "C" || PiecesPosition[i + (r * 8 - 1)] === "c") {
+                        if (pP === pP.toUpperCase() && PiecesPosition[i + (r * 8 - 1)] === PiecesPosition[i + (r * 8 - 1)].toLowerCase()) {
                           blackC(n);
-                        } else if (pP === pP.toLowerCase() && piecesPosition[i + (r * 8 - 1)] === piecesPosition[i + (r * 8 - 1)].toUpperCase()) {
+                        } else if (pP === pP.toLowerCase() && PiecesPosition[i + (r * 8 - 1)] === PiecesPosition[i + (r * 8 - 1)].toUpperCase()) {
                           whiteC(n);
                         }
                       }

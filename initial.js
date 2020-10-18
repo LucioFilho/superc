@@ -1,157 +1,79 @@
 /*jshint esversion: 6 */
-//link to use svg
-const svgNS = "http://www.w3.org/2000/svg";
+//link to cast svg
+const SvgNS = "http://www.w3.org/2000/svg";
 
-//get board
-const board = document.getElementById("board"); //game board where match happens
+//get board on html
+const Board = document.getElementById("board"); //game board where match happens
 
 //vars to manage loops
-var again;
-var blackCastlesInCheck = [];
-var blackLandingsInCheck = [];
-var bSqSel;
-var cli = 0;
-var drawCanvas;
-var evenOdd;
-var filler = "rgba(200,200,200,0.5)";
-var fillStyle;
-var i = 0;
-var j = 0;
-var landingsAgain = 0;
-var m = 0;
-var matchStatus = 0;
-var mMoveLanding;
-var mMoveLeaving;
-var pieceFill1;
-var pieceFill2;
-var pieceID1;
-var pieceID2;
-var pieceRadius1;
-var pieceRadius2;
-var pieceStroke1;
-var pieceStroke2;
-var pieceStrokeWidth1;
-var pieceStrokeWidth2;
-var pPReversed = [];
-var promoControl = 0;
-var promoID = 71;
-var rowEvenOdd;
-var selectPieceStatus = 0;
-var square_x;
-var square_y;
-var squareColor;
-var squaresToGo;
-var stroker = "rgba(0,0,0,0.3)";
-var strokeStyle;
-var timer = 0;
-var totalBCastles = 0;
-var totalWCastles = 0;
-var turn = "W";
-var verseReverse = "wb";
-var whiteCastlesInCheck = [];
-var whiteLandingsInCheck = [];
-var xMark = 0;
-var yMark = 0;
+var Again;
+var ArrowColor = "";
+var BlackCastlesInCheck = [];
+var BlackLandingsInCheck = [];
+var BSqSel;
+var Cli = 0;
+var Clo = 0;
+var ColorBlack = "rgba(50,50,100,1.0)";
+var ColorOh = "rgba(50,100,50,1.0)";
+var ColorWhite = "rgba(130,80,0,1.0)";
+var DrawCanvas;
+var EvenOdd;
+var Filler = "rgba(200,200,200,0.5)";
+var FillStyle;
+var I = 0;
+var J = 0;
+var LandingsAgain = 0;
+var Letters = [];
+var LockFlipBoard = 0;
+var M = 0;
+var MarkerControl = 0;
+var MarkerCount = 0;
+var MatchStatus = 0;
+var MMoveLanding = 0;
+var MMoveLeaving = 0;
+var Numbers = [];
+var PieceFill1;
+var PieceFill2;
+var PieceID1;
+var PieceID2;
+var PieceRadius1;
+var PieceRadius2;
+var PiecesToRemove;
+var PieceStroke1;
+var PieceStroke2;
+var PieceStrokeWidth1;
+var PieceStrokeWidth2;
+var PPReversed = [];
+var PromoControl = 0;
+var PromoID = 71;
+var R = 0;
+var RowEvenOdd;
+var SelectPieceStatus = 0;
+var ShortPiecePosition = [];
+var Square_x;
+var Square_y;
+var SquareColor;
+var SquaresToGo;
+var Stroker = "rgba(0,0,0,0.3)";
+var StrokeStyle;
+var Timer = 0;
+var Timer2 = 0;
+var TotalBBishops = 8;
+var TotalBCastles = 8;
+var TotalBRooks = 8;
+var TotalWBishops = 8;
+var TotalWCastles = 8;
+var TotalWRooks = 8;
+var Turn = "W";
+var VerseReverse = "wb";
+var WhiteCastlesInCheck = [];
+var WhiteLandingsInCheck = [];
+var XLeaving;
+var XMark = 0;
+var YLeaving;
+var YMark = 0;
 
-//take initial pieces position
-const initialNotation = "8c48O8C"; //compact code to initial position on board
-
-//temporary code to develop
-//const initialNotation = "5cr2cC3Ob3OpON2Or2OR5On4OQ4On3OPBqbObrq3Or8C"; //compact code to initial position on board
-
-const readInitialNotation = initialNotation.split(""); //split the compacted code to work with its letters and numbers
-var initialPiecesPosition = ""; //here we insert decoded code
-
-//open code to place pieces on board
-var r = 0;
-while (r < readInitialNotation.length) {
-  let n = 0;
-  let l = 0;
-  let c = 0;
-  let p = 0;
-  if (isNaN(readInitialNotation[r])) {
-    n = 1;
-    initialPiecesPosition = initialPiecesPosition.concat(readInitialNotation[r]);
-  } else if (isNaN(readInitialNotation[r + 1])) {
-    l = readInitialNotation[r + 1];
-    n = l.repeat(readInitialNotation[r]);
-    initialPiecesPosition = initialPiecesPosition.concat(n);
-    r++;
-  } else {
-    l = readInitialNotation[r];
-    n = l.concat(readInitialNotation[r + 1]);
-    c = readInitialNotation[r + 2];
-    p = c.repeat(n);
-    initialPiecesPosition = initialPiecesPosition.concat(p);
-    r++;
-    r++;
-  }
-  r++;
-}
-
-//piecesPosition keep open code to manage moves
-var piecesPosition = initialPiecesPosition.split(""); //get deciphered code to work with letters and numbers
-
-//ghost array to test last castle move in check
-var ghostPiecesPosition = [];
-
-//compact code to send it
-var turnNotation = [];
-var move = 0;
-
-//compact code to send it to db and opponent player
-function shortCode() {
-
-  let shortPiecePosition = [];
-  let pPR = "";
-  let i = 0;
-
-  if (verseReverse === "wb") {
-    shortPiecePosition = Array.from(piecesPosition);
-  } else {
-    while (i < 64) {
-      if (piecesPosition[i] !== "O") {
-        if (piecesPosition[i] === piecesPosition[i].toLowerCase()) {
-          pPR = piecesPosition[i].toUpperCase();
-        } else {
-          pPR = piecesPosition[i].toLowerCase();
-        }
-      } else {
-        pPR = "O";
-      }
-      pPReversed.push(pPR);
-
-      i++;
-    }
-    pPReversed.reverse();
-    shortPiecePosition = Array.from(pPReversed);
-  }
-
-  let r = 0;
-  let shortIt = "";
-  let turnPush = "";
-  let evenOdd;
-  while (r < 64) {
-    let c = 1;
-    if (shortPiecePosition[r] === shortPiecePosition[r + c]) {
-      while (shortPiecePosition[r] === shortPiecePosition[r + c]) {
-        c++;
-      }
-      shortIt = c + shortPiecePosition[r];
-    } else {
-      shortIt = shortPiecePosition[r];
-    }
-    r += c;
-    turnPush += shortIt;
-  }
-  turnNotation.push(turnPush);
-  evenOdd = move % 2 === 0 ? "b" : "w";
-  console.log(evenOdd + " " + turnNotation[move]);
-  move++;
-}
-shortCode();
-
-//declare arrays to manage show/hide marks
+//mark numbers to manage show/hide marks for each kind of piece
 const marksToO = [];
 const marksToP = [97, 98, 99];
 const marksTop = [127, 128, 129];
@@ -179,52 +101,154 @@ const marksToN = [82, 84, 96, 100, 126, 130, 142, 144];
 const marksToR = [8, 23, 38, 53, 68, 83, 98, 128, 143, 158, 173, 188, 203, 218, 106, 107, 108, 109, 110, 111, 112, 114, 115, 116, 117, 118, 119, 120];
 
 //control pieces position by id
-
 var extPiecesPosition = [1, 2, 3, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 57, 58, 59, 60, 61, 62, 63, 64];
 var midPiecesPosition = [1, 2, 3, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 57, 58, 59, 60, 61, 62, 63, 64];
 var intPiecesPosition = [1, 2, 3, 4, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 57, 58, 59, 60, 61, 62, 63, 64];
 
-var extPiecesPositionReversed = [];
-var midPiecesPositionReversed = [];
-var intPiecesPositionReversed = [];
-var piecesPositionReversed = [];
+//take initial pieces position
+const InitialNotation = "8c48O8C"; //compact code to initial position on board
 
-//reverse code to rotate board game.
-function reverseCode() {
-  verseReverse = verseReverse === "wb" ? "bw" : "wb";
+//split the compacted code to work with its Letters and Numbers
+const ReadInitialNotation = InitialNotation.split("");
 
-  turn = turn === "W" ? "b" : "W";
+//here we insert decoded code
+var InitialPiecesPosition = "";
 
-  piecesPositionReversed = [];
-  extPiecesPositionReversed = [];
-  midPiecesPositionReversed = [];
-  intPiecesPositionReversed = [];
+//open code to place pieces on board
+while (R < ReadInitialNotation.length) {
+  let n = 0;
+  let l = 0;
+  let c = 0;
+  let p = 0;
+  if (isNaN(ReadInitialNotation[R])) {
+    n = 1;
+    InitialPiecesPosition = InitialPiecesPosition.concat(ReadInitialNotation[R]);
+  } else if (isNaN(ReadInitialNotation[R + 1])) {
+    l = ReadInitialNotation[R + 1];
+    n = l.repeat(ReadInitialNotation[R]);
+    InitialPiecesPosition = InitialPiecesPosition.concat(n);
+    R++;
+  } else {
+    l = ReadInitialNotation[R];
+    n = l.concat(ReadInitialNotation[R + 1]);
+    c = ReadInitialNotation[R + 2];
+    p = c.repeat(n);
+    InitialPiecesPosition = InitialPiecesPosition.concat(p);
+    R++;
+    R++;
+  }
+  R++;
+}
 
+//piecesPosition keep open code to manage local moves
+var PiecesPosition = InitialPiecesPosition.split(""); //get deciphered code to work with Letters and Numbers
+
+//ghost array to test last castle move in check
+var GhostPiecesPosition = [];
+
+//compact code to send it
+var TurnNotation = [];
+var Move = 0;
+
+//compact code to send it to db and opponent player
+function shortCode() {
+
+  let i = 0;
+  ShortPiecePosition = Array.from(PiecesPosition);
+
+  let r = 0;
+  let shortIt = "";
+  let turnPush = "";
+  let evenOdd;
+
+  while (r < 64) {
+    let c = 1;
+    if (ShortPiecePosition[r] === ShortPiecePosition[r + c]) {
+      while (ShortPiecePosition[r] === ShortPiecePosition[r + c]) {
+        c++;
+      }
+      shortIt = c + ShortPiecePosition[r];
+    } else {
+      shortIt = ShortPiecePosition[r];
+    }
+    r += c;
+    turnPush += shortIt;
+  }
+
+  TurnNotation.push(turnPush);
+  evenOdd = Move % 2 === 0 ? "b" : "w";
+
+  console.log(Move + " " + evenOdd + " Cc" + TotalWCastles + "" + TotalBCastles + " BR" + TotalWBishops + "" + TotalWRooks + " br" + TotalBBishops + "" + TotalBRooks + " " + TurnNotation[Move]);
+
+  Move++;
+}
+shortCode();
+
+//row by row black and white and square positions controller
+function squarer(I) {
+
+  if (I < 9) {
+    RowEvenOdd = 1;
+    Square_x = (I - 1) * 60;
+    Square_y = 0;
+  } else if (I < 17) {
+    RowEvenOdd = 0;
+    Square_x = (I - 9) * 60;
+    Square_y = 60;
+  } else if (I < 25) {
+    RowEvenOdd = 1;
+    Square_x = (I - 17) * 60;
+    Square_y = 120;
+  } else if (I < 33) {
+    RowEvenOdd = 0;
+    Square_x = (I - 25) * 60;
+    Square_y = 180;
+  } else if (I < 41) {
+    RowEvenOdd = 1;
+    Square_x = (I - 33) * 60;
+    Square_y = 240;
+  } else if (I < 49) {
+    RowEvenOdd = 0;
+    Square_x = (I - 41) * 60;
+    Square_y = 300;
+  } else if (I < 57) {
+    RowEvenOdd = 1;
+    Square_x = (I - 49) * 60;
+    Square_y = 360;
+  } else {
+    RowEvenOdd = 0;
+    Square_x = (I - 57) * 60;
+    Square_y = 420;
+  }
+}
+
+//reverse control to flip pieces on board game.
+function reversePieces() {
+  VerseReverse = VerseReverse === "wb" ? "bw" : "wb";
+
+  unClickSquare();
+  clearMarkers();
+
+  //to control moved pieces marks reverse
   let mMLeaving1x = 0;
   let mMLeaving1y = 0;
   let mMLanding2x = 0;
   let mMLanding2y = 0;
 
-  let pPR = "";
   let pX = 0;
   let pY = 0;
   let i = 0;
 
+  //pieces reposition to flip board
   while (i < 64) {
-    if (piecesPosition[i] !== "O") {
-      if (piecesPosition[i] === piecesPosition[i].toLowerCase()) {
-        pPR = piecesPosition[i].toUpperCase();
-      } else {
-        pPR = piecesPosition[i].toLowerCase();
-      }
-    } else {
-      pPR = "O";
-    }
-    piecesPositionReversed.push(pPR);
 
-    pX = parseInt(document.getElementById("Square" + (64 - i)).getAttributeNS(null, "x")) + 30;
-    pY = parseInt(document.getElementById("Square" + (64 - i)).getAttributeNS(null, "y")) + 30;
+    //get squares positions from last until first square
 
+    pX = parseInt(document.getElementById("butSquare" + (64 - i)).getAttributeNS(null, "x")) + 30;
+    pY = parseInt(document.getElementById("butSquare" + (64 - i)).getAttributeNS(null, "y")) + 30;
+
+
+    //find and reposition all pieces to flip board
     if (extPiecesPosition[i] !== 0) {
       document.getElementById("extA" + extPiecesPosition[i]).setAttributeNS(null, "cx", pX);
       document.getElementById("extA" + extPiecesPosition[i]).setAttributeNS(null, "cy", pY);
@@ -247,76 +271,102 @@ function reverseCode() {
     i++;
   }
 
-  //wb move marks
-  if (matchStatus === 1) {
+  //flip buttons to organize board square buttons
+  I = 0;
+  while (I < 64) {
+    I++;
 
-    mMLeaving1x = parseInt(document.getElementById("Square" + (65 - mMoveLeaving)).getAttributeNS(null, "x"));
-    mMLeaving1y = parseInt(document.getElementById("Square" + (65 - mMoveLeaving)).getAttributeNS(null, "y"));
-    mMLanding2x = parseInt(document.getElementById("Square" + (65 - mMoveLanding)).getAttributeNS(null, "x"));
-    mMLanding2y = parseInt(document.getElementById("Square" + (65 - mMoveLanding)).getAttributeNS(null, "y"));
+    squarer(I);
+
+    if (VerseReverse === "bw") {
+      document.getElementById("butSquare" + (65 - I)).setAttributeNS(null, "x", Square_x);
+      document.getElementById("butSquare" + (65 - I)).setAttributeNS(null, "y", Square_y);
+    } else {
+      document.getElementById("butSquare" + I).setAttributeNS(null, "x", Square_x);
+      document.getElementById("butSquare" + I).setAttributeNS(null, "y", Square_y);
+    }
+  }
+
+  //wb control marks used to show where pieces move
+  if (MMoveLeaving !== 0) {
+
+    mMLeaving1x = parseInt(document.getElementById("butSquare" + (MMoveLeaving)).getAttributeNS(null, "x"));
+    mMLeaving1y = parseInt(document.getElementById("butSquare" + (MMoveLeaving)).getAttributeNS(null, "y"));
+    mMLanding2x = parseInt(document.getElementById("butSquare" + (MMoveLanding)).getAttributeNS(null, "x"));
+    mMLanding2y = parseInt(document.getElementById("butSquare" + (MMoveLanding)).getAttributeNS(null, "y"));
 
     document.getElementById("mMove1").setAttributeNS(null, "x", mMLeaving1x);
     document.getElementById("mMove1").setAttributeNS(null, "y", mMLeaving1y);
     document.getElementById("mMove2").setAttributeNS(null, "x", mMLanding2x);
     document.getElementById("mMove2").setAttributeNS(null, "y", mMLanding2y);
 
-    mMoveLeaving = 65 - mMoveLeaving;
-    mMoveLanding = 65 - mMoveLanding;
+    MMoveLeaving = MMoveLeaving;
+    MMoveLanding = MMoveLanding;
 
   }
-  //reverse array piecesPosition and pieces ID controllers
-  piecesPositionReversed.reverse();
-  piecesPosition = [];
-  piecesPosition = Array.from(piecesPositionReversed);
 
-  extPiecesPositionReversed = Array.from(extPiecesPosition);
-  extPiecesPositionReversed.reverse();
-  extPiecesPosition = [];
-  extPiecesPosition = Array.from(extPiecesPositionReversed);
+  //board Letters and Numbers
+  if (VerseReverse === "wb") {
 
-  midPiecesPositionReversed = Array.from(midPiecesPosition);
-  midPiecesPositionReversed.reverse();
-  midPiecesPosition = [];
-  midPiecesPosition = Array.from(midPiecesPositionReversed);
-
-  intPiecesPositionReversed = Array.from(intPiecesPosition);
-  intPiecesPositionReversed.reverse();
-  intPiecesPosition = [];
-  intPiecesPosition = Array.from(intPiecesPositionReversed);
-
-  let letters = [];
-  let numbers = [];
-  //board letters and numbers
-  if (verseReverse === "wb") {
-
-    letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
-    numbers = ["1", "2", "3", "4", "5", "6", "7", "8"];
+    Letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    Numbers = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
   } else {
 
-    letters = ["h", "g", "f", "e", "d", "c", "b", "a"];
-    numbers = ["8", "7", "6", "5", "4", "3", "2", "1"];
+    Letters = ["h", "g", "f", "e", "d", "c", "b", "a"];
+    Numbers = ["8", "7", "6", "5", "4", "3", "2", "1"];
 
   }
 
-  j = 0;
-  while (j < 8) {
-    //flip board letters and numbers
-    document.getElementById("letter_" + j).textContent = letters[j];
-    document.getElementById("number_" + j).textContent = numbers[j];
+  J = 0;
+  while (J < 8) {
+    //flip board Letters and Numbers
+    document.getElementById("letter_" + J).textContent = Letters[J];
+    document.getElementById("number_" + J).textContent = Numbers[J];
 
-    j++;
+    J++;
   }
 
-  unClickSquare();
+  //reverse hidden marks
+  let n = 225;
+  let marksX = [];
+  let marksY = [];
+  let underMarksX = [];
+  let underMarksY = [];
 
-  castlesInCheck();
+  while (n > 0) {
+    //get positions to perform swaps
+    marksX.push(parseInt(document.getElementById("Mark" + n).getAttributeNS(null, "cx")));
+    marksY.push(parseInt(document.getElementById("Mark" + n).getAttributeNS(null, "cy")));
+    underMarksX.push(parseInt(document.getElementById("underMark" + n).getAttributeNS(null, "cx")));
+    underMarksY.push(parseInt(document.getElementById("underMark" + n).getAttributeNS(null, "cy")));
+
+    n--;
+  }
+  let m = 0;
+  while (m < 225) {
+
+    document.getElementById("Mark" + (m + 1)).setAttributeNS(null, "cx", marksX[m]);
+    document.getElementById("Mark" + (m + 1)).setAttributeNS(null, "cy", marksY[m]);
+    document.getElementById("underMark" + (m + 1)).setAttributeNS(null, "cx", underMarksX[m]);
+    document.getElementById("underMark" + (m + 1)).setAttributeNS(null, "cy", underMarksY[m]);
+
+    m++;
+  }
+
+  TotalWCastles = 0;
+  TotalBCastles = 0;
+  TotalWBishops = 0;
+  TotalBBishops = 0;
+  TotalWRooks = 0;
+  TotalBRooks = 0;
+  PiecesPosition.forEach(count888);
 
 }
 
-//board limit collisions BL
+//board limit to check marks inside board area. BL
 function boardLimits() {
-  const shapeBoardLimits = document.createElementNS(svgNS, "rect");
+  const shapeBoardLimits = document.createElementNS(SvgNS, "rect");
   shapeBoardLimits.setAttributeNS(null, "id", "BL");
   shapeBoardLimits.setAttributeNS(null, "width", 480);
   shapeBoardLimits.setAttributeNS(null, "height", 480);
@@ -324,67 +374,33 @@ function boardLimits() {
   shapeBoardLimits.setAttributeNS(null, "y", 0);
   shapeBoardLimits.setAttributeNS(null, "fill", "transparent");
   shapeBoardLimits.setAttributeNS(null, "stroke-width", 0);
-  board.appendChild(shapeBoardLimits);
+  Board.appendChild(shapeBoardLimits);
 }
-
 boardLimits();
 
 //draw board squares
 function drawSquares() {
   let actualSquareColor;
-  if (squareColor === "white") {
+  if (SquareColor === "white") {
     actualSquareColor = "rgba(210,225,195,1.0)";
   } else {
     actualSquareColor = "rgba(102,153,51,1.0)";
   }
-  const shape1 = document.createElementNS(svgNS, "rect");
-  shape1.setAttributeNS(null, "id", drawCanvas);
+  const shape1 = document.createElementNS(SvgNS, "rect");
+  shape1.setAttributeNS(null, "id", DrawCanvas);
   shape1.setAttributeNS(null, "width", 60);
   shape1.setAttributeNS(null, "height", 60);
-  shape1.setAttributeNS(null, "x", square_x);
-  shape1.setAttributeNS(null, "y", square_y);
+  shape1.setAttributeNS(null, "x", Square_x);
+  shape1.setAttributeNS(null, "y", Square_y);
   shape1.setAttributeNS(null, "fill", actualSquareColor);
   shape1.setAttributeNS(null, "stroke-width", 0);
   shape1.setAttributeNS(null, "shape-rendering", "geometricPrecision");
-  board.appendChild(shape1);
-}
-
-function drawBoardLetters() {
-
-  let i = 0;
-  let letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
-  let numbers = ["1", "2", "3", "4", "5", "6", "7", "8"];
-
-  while (i < 8) {
-    const lettering = document.createElementNS(svgNS, "text");
-    lettering.setAttributeNS(null, "id", "letter_" + i);
-    lettering.setAttribute("x", (60 * (i + 1)) - 58);
-    lettering.setAttribute("y", 478);
-    lettering.setAttribute("fill", "rgba(0,0,0,0.4)");
-    lettering.setAttribute("font-family", "Helvetica");
-    lettering.setAttribute("font-weight", "bold");
-    lettering.setAttribute("font-size", 13);
-    lettering.textContent = letters[i];
-    board.appendChild(lettering);
-
-    const numbering = document.createElementNS(svgNS, "text");
-    numbering.setAttributeNS(null, "id", "number_" + i);
-    numbering.setAttribute("x", 472);
-    numbering.setAttribute("y", (60 * (8 - i)) - 49);
-    numbering.setAttribute("fill", "rgba(0,0,0,0.4)");
-    numbering.setAttribute("font-family", "Helvetica");
-    numbering.setAttribute("font-weight", "bold");
-    numbering.setAttribute("font-size", 13);
-    numbering.textContent = numbers[i];
-    board.appendChild(numbering);
-
-    i++;
-  }
+  Board.appendChild(shape1);
 }
 
 function drawMarkMoves() {
 
-  const shapeMoves1 = document.createElementNS(svgNS, "rect");
+  const shapeMoves1 = document.createElementNS(SvgNS, "rect");
   shapeMoves1.setAttributeNS(null, "id", "mMove1");
   shapeMoves1.setAttributeNS(null, "width", 60);
   shapeMoves1.setAttributeNS(null, "height", 60);
@@ -393,9 +409,9 @@ function drawMarkMoves() {
   shapeMoves1.setAttributeNS(null, "fill", "rgba(255,200,0,0.8)");
   shapeMoves1.setAttributeNS(null, "stroke-width", 0);
   shapeMoves1.setAttributeNS(null, "shape-rendering", "geometricPrecision");
-  board.appendChild(shapeMoves1);
+  Board.appendChild(shapeMoves1);
 
-  const shapeMoves2 = document.createElementNS(svgNS, "rect");
+  const shapeMoves2 = document.createElementNS(SvgNS, "rect");
   shapeMoves2.setAttributeNS(null, "id", "mMove2");
   shapeMoves2.setAttributeNS(null, "width", 60);
   shapeMoves2.setAttributeNS(null, "height", 60);
@@ -404,10 +420,44 @@ function drawMarkMoves() {
   shapeMoves2.setAttributeNS(null, "fill", "rgba(255,200,0,0.8)");
   shapeMoves2.setAttributeNS(null, "stroke-width", 0);
   shapeMoves2.setAttributeNS(null, "shape-rendering", "geometricPrecision");
-  board.appendChild(shapeMoves2);
+  Board.appendChild(shapeMoves2);
 }
 
-//marks to check castles in check
+//lettering to mark squares with numbers and letters
+function drawBoardLetters() {
+
+  let i = 0;
+  let Letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  let Numbers = ["1", "2", "3", "4", "5", "6", "7", "8"];
+
+  while (i < 8) {
+    const lettering = document.createElementNS(SvgNS, "text");
+    lettering.setAttributeNS(null, "id", "letter_" + i);
+    lettering.setAttribute("x", (60 * (i + 1)) - 58);
+    lettering.setAttribute("y", 478);
+    lettering.setAttribute("fill", "rgba(0,0,0,0.4)");
+    lettering.setAttribute("font-family", "Helvetica");
+    lettering.setAttribute("font-weight", "bold");
+    lettering.setAttribute("font-size", 13);
+    lettering.textContent = Letters[i];
+    Board.appendChild(lettering);
+
+    const numbering = document.createElementNS(SvgNS, "text");
+    numbering.setAttributeNS(null, "id", "number_" + i);
+    numbering.setAttribute("x", 472);
+    numbering.setAttribute("y", (60 * (8 - i)) - 49);
+    numbering.setAttribute("fill", "rgba(0,0,0,0.4)");
+    numbering.setAttribute("font-family", "Helvetica");
+    numbering.setAttribute("font-weight", "bold");
+    numbering.setAttribute("font-size", 13);
+    numbering.textContent = Numbers[i];
+    Board.appendChild(numbering);
+
+    i++;
+  }
+}
+
+//marks and undermarks control to check castles in check
 function underxyMover(moverVal, xMove, yMove) {
   let m = 0;
   while (m < 225) {
@@ -433,76 +483,76 @@ function underxyMover(moverVal, xMove, yMove) {
 
 //drawPieces
 function drawPieces() {
-  const shape2 = document.createElementNS(svgNS, "circle");
-  shape2.setAttributeNS(null, "id", pieceID1);
-  shape2.setAttributeNS(null, "cx", square_x + 30);
-  shape2.setAttributeNS(null, "cy", square_y + 30);
-  shape2.setAttributeNS(null, "r", pieceRadius1);
-  shape2.setAttributeNS(null, "fill", pieceFill1);
-  shape2.setAttributeNS(null, "stroke", pieceStroke1);
-  shape2.setAttributeNS(null, "stroke-width", pieceStrokeWidth1);
+  const shape2 = document.createElementNS(SvgNS, "circle");
+  shape2.setAttributeNS(null, "id", PieceID1);
+  shape2.setAttributeNS(null, "cx", Square_x + 30);
+  shape2.setAttributeNS(null, "cy", Square_y + 30);
+  shape2.setAttributeNS(null, "r", PieceRadius1);
+  shape2.setAttributeNS(null, "fill", PieceFill1);
+  shape2.setAttributeNS(null, "stroke", PieceStroke1);
+  shape2.setAttributeNS(null, "stroke-width", PieceStrokeWidth1);
   shape2.setAttributeNS(null, "shape-rendering", "geometricPrecision");
-  board.appendChild(shape2);
-  const shape3 = document.createElementNS(svgNS, "circle");
-  shape3.setAttributeNS(null, "id", pieceID2);
-  shape3.setAttributeNS(null, "cx", square_x + 30);
-  shape3.setAttributeNS(null, "cy", square_y + 30);
-  shape3.setAttributeNS(null, "r", pieceRadius2);
-  shape3.setAttributeNS(null, "fill", pieceFill2);
-  shape3.setAttributeNS(null, "stroke", pieceStroke2);
-  shape3.setAttributeNS(null, "stroke-width", pieceStrokeWidth2);
+  Board.appendChild(shape2);
+  const shape3 = document.createElementNS(SvgNS, "circle");
+  shape3.setAttributeNS(null, "id", PieceID2);
+  shape3.setAttributeNS(null, "cx", Square_x + 30);
+  shape3.setAttributeNS(null, "cy", Square_y + 30);
+  shape3.setAttributeNS(null, "r", PieceRadius2);
+  shape3.setAttributeNS(null, "fill", PieceFill2);
+  shape3.setAttributeNS(null, "stroke", PieceStroke2);
+  shape3.setAttributeNS(null, "stroke-width", PieceStrokeWidth2);
   shape3.setAttributeNS(null, "shape-rendering", "geometricPrecision");
-  board.appendChild(shape3);
+  Board.appendChild(shape3);
 }
 
 //set attributes to draw pieces
 function setPieces() {
-  if (piecesPosition[i - 1] === piecesPosition[i - 1].toLowerCase()) {
-    fillStyle = "rgba(0,0,0,1.0)";
-    strokeStyle = "rgba(255,255,255,1.0)";
+  if (PiecesPosition[I - 1] === PiecesPosition[I - 1].toLowerCase()) {
+    FillStyle = "rgba(0,0,0,1.0)";
+    StrokeStyle = "rgba(255,255,255,1.0)";
   } else {
-    fillStyle = "rgba(255,255,255,1.0)";
-    strokeStyle = "rgba(0,0,0,1.0)";
+    FillStyle = "rgba(255,255,255,1.0)";
+    StrokeStyle = "rgba(0,0,0,1.0)";
   }
-  if (piecesPosition[i - 1] === "q" || piecesPosition[i - 1] === "c" || piecesPosition[i - 1] === "r" || piecesPosition[i - 1] === "Q" || piecesPosition[i - 1] === "C" || piecesPosition[i - 1] === "R") {
-    pieceID1 = "intA" + i;
-    pieceID2 = "intB" + i;
-    pieceRadius1 = 15;
-    pieceRadius2 = 14;
-    pieceFill1 = strokeStyle;
-    pieceFill2 = fillStyle;
-    pieceStroke1 = "transparent";
-    pieceStroke2 = "transparent";
-    pieceStrokeWidth1 = 0;
-    pieceStrokeWidth2 = 0;
+  if (PiecesPosition[I - 1] === "q" || PiecesPosition[I - 1] === "c" || PiecesPosition[I - 1] === "r" || PiecesPosition[I - 1] === "Q" || PiecesPosition[I - 1] === "C" || PiecesPosition[I - 1] === "R") {
+    PieceID1 = "intA" + I;
+    PieceID2 = "intB" + I;
+    PieceRadius1 = 15;
+    PieceRadius2 = 14;
+    PieceFill1 = StrokeStyle;
+    PieceFill2 = FillStyle;
+    PieceStroke1 = "transparent";
+    PieceStroke2 = "transparent";
+    PieceStrokeWidth1 = 0;
+    PieceStrokeWidth2 = 0;
     drawPieces();
   }
 
-  if (piecesPosition[i - 1] === "q" || piecesPosition[i - 1] === "b" || piecesPosition[i - 1] === "c" || piecesPosition[i - 1] === "n" || piecesPosition[i - 1] === "Q" || piecesPosition[i - 1] === "B" || piecesPosition[i - 1] === "C" || piecesPosition[i - 1] === "N") {
-    pieceID1 = "midA" + i;
-    pieceID2 = "midB" + i;
-    pieceRadius1 = 18;
-    pieceRadius2 = 18;
-    pieceFill1 = "transparent";
-    pieceFill2 = "transparent";
-    pieceStroke1 = strokeStyle;
-    pieceStroke2 = fillStyle;
-    pieceStrokeWidth1 = 8;
-    pieceStrokeWidth2 = 6;
+  if (PiecesPosition[I - 1] === "q" || PiecesPosition[I - 1] === "b" || PiecesPosition[I - 1] === "c" || PiecesPosition[I - 1] === "n" || PiecesPosition[I - 1] === "Q" || PiecesPosition[I - 1] === "B" || PiecesPosition[I - 1] === "C" || PiecesPosition[I - 1] === "N") {
+    PieceID1 = "midA" + I;
+    PieceID2 = "midB" + I;
+    PieceRadius1 = 18;
+    PieceRadius2 = 18;
+    PieceFill1 = "transparent";
+    PieceFill2 = "transparent";
+    PieceStroke1 = StrokeStyle;
+    PieceStroke2 = FillStyle;
+    PieceStrokeWidth1 = 8;
+    PieceStrokeWidth2 = 6;
     drawPieces();
   }
 
-  if (piecesPosition[i - 1] === "c" || piecesPosition[i - 1] === "p" || piecesPosition[i - 1] === "n" || piecesPosition[i - 1] === "C" || piecesPosition[i - 1] === "P" || piecesPosition[i - 1] === "N") {
-    pieceID1 = "extA" + i;
-    pieceID2 = "extB" + i;
-    pieceRadius1 = 25;
-    pieceRadius2 = 25;
-    pieceFill1 = "transparent";
-    pieceFill2 = "transparent";
-    pieceStroke1 = strokeStyle;
-    pieceStroke2 = fillStyle;
-    pieceStrokeWidth1 = 8;
-    pieceStrokeWidth2 = 6;
+  if (PiecesPosition[I - 1] === "c" || PiecesPosition[I - 1] === "p" || PiecesPosition[I - 1] === "n" || PiecesPosition[I - 1] === "C" || PiecesPosition[I - 1] === "P" || PiecesPosition[I - 1] === "N") {
+    PieceID1 = "extA" + I;
+    PieceID2 = "extB" + I;
+    PieceRadius1 = 25;
+    PieceRadius2 = 25;
+    PieceFill1 = "transparent";
+    PieceFill2 = "transparent";
+    PieceStroke1 = StrokeStyle;
+    PieceStroke2 = FillStyle;
+    PieceStrokeWidth1 = 8;
+    PieceStrokeWidth2 = 6;
     drawPieces();
   }
 }
@@ -526,7 +576,7 @@ function promoPieces() {
 
   while (p < 86 && x < 2) {
     p++;
-    const shapePromo1 = document.createElementNS(svgNS, "circle");
+    const shapePromo1 = document.createElementNS(SvgNS, "circle");
     shapePromo1.setAttributeNS(null, "id", idType + "A" + p);
     shapePromo1.setAttributeNS(null, "cx", 600);
     shapePromo1.setAttributeNS(null, "cy", 600);
@@ -535,9 +585,9 @@ function promoPieces() {
     shapePromo1.setAttributeNS(null, "stroke", pStroke1);
     shapePromo1.setAttributeNS(null, "stroke-width", pStrokeWidth1);
     shapePromo1.setAttributeNS(null, "shape-rendering", "geometricPrecision");
-    board.appendChild(shapePromo1);
+    Board.appendChild(shapePromo1);
 
-    const shapePromo2 = document.createElementNS(svgNS, "circle");
+    const shapePromo2 = document.createElementNS(SvgNS, "circle");
     shapePromo2.setAttributeNS(null, "id", idType + "B" + p);
     shapePromo2.setAttributeNS(null, "cx", 600);
     shapePromo2.setAttributeNS(null, "cy", 600);
@@ -546,7 +596,7 @@ function promoPieces() {
     shapePromo2.setAttributeNS(null, "stroke", pStroke2);
     shapePromo2.setAttributeNS(null, "stroke-width", pStrokeWidth2);
     shapePromo2.setAttributeNS(null, "shape-rendering", "geometricPrecision");
-    board.appendChild(shapePromo2);
+    Board.appendChild(shapePromo2);
 
     if (p === 86) {
       idType = "mid";
@@ -589,258 +639,366 @@ function promoPieces() {
   }
 }
 
-//draw marks inside mc
-function callDrawMarks() {
-  //draw marks
-  while (m < 225) {
-    m++;
-    if (m < 16) {
-      xMark = (m - 1) * 60;
-      yMark = 0;
-    } else if (m < 31) {
-      xMark = (m - 16) * 60;
-      yMark = 60;
-    } else if (m < 46) {
-      xMark = (m - 31) * 60;
-      yMark = 120;
-    } else if (m < 61) {
-      xMark = (m - 46) * 60;
-      yMark = 180;
-    } else if (m < 76) {
-      xMark = (m - 61) * 60;
-      yMark = 240;
-    } else if (m < 91) {
-      xMark = (m - 76) * 60;
-      yMark = 300;
-    } else if (m < 106) {
-      xMark = (m - 91) * 60;
-      yMark = 360;
-    } else if (m < 121) {
-      xMark = (m - 106) * 60;
-      yMark = 420;
-    } else if (m < 136) {
-      xMark = (m - 121) * 60;
-      yMark = 480;
-    } else if (m < 151) {
-      xMark = (m - 136) * 60;
-      yMark = 540;
-    } else if (m < 166) {
-      xMark = (m - 151) * 60;
-      yMark = 600;
-    } else if (m < 181) {
-      xMark = (m - 166) * 60;
-      yMark = 660;
-    } else if (m < 196) {
-      xMark = (m - 181) * 60;
-      yMark = 720;
-    } else if (m < 211) {
-      xMark = (m - 196) * 60;
-      yMark = 780;
-    } else if (m < 226) {
-      xMark = (m - 211) * 60;
-      yMark = 840;
-    }
-    drawMarks();
-  }
-}
-
+//draw marks and undermarks
 function drawMarks() {
-  const shapeMarks = document.createElementNS(svgNS, "circle");
-  shapeMarks.setAttributeNS(null, "id", "Mark" + m);
-  shapeMarks.setAttributeNS(null, "cx", xMark + 30);
-  shapeMarks.setAttributeNS(null, "cy", yMark + 30);
+  const shapeMarks = document.createElementNS(SvgNS, "circle");
+  shapeMarks.setAttributeNS(null, "id", "Mark" + M);
+  shapeMarks.setAttributeNS(null, "cx", XMark + 30);
+  shapeMarks.setAttributeNS(null, "cy", YMark + 30);
   shapeMarks.setAttributeNS(null, "r", 10);
-  shapeMarks.setAttributeNS(null, "fill", "rgba(100,50,50,0)");
+  shapeMarks.setAttributeNS(null, "fill", "rgba(0,0,0,0)");
   shapeMarks.setAttributeNS(null, "stroke", "rgba(0,0,0,0)");
   shapeMarks.setAttributeNS(null, "stroke-width", 1);
   shapeMarks.setAttributeNS(null, "shape-rendering", "geometricPrecision");
-  board.appendChild(shapeMarks);
+  Board.appendChild(shapeMarks);
 
-  const shapeUnderMarks = document.createElementNS(svgNS, "circle");
-  shapeUnderMarks.setAttributeNS(null, "id", "underMark" + m);
-  shapeUnderMarks.setAttributeNS(null, "cx", xMark + 30);
-  shapeUnderMarks.setAttributeNS(null, "cy", yMark + 30);
+  const shapeUnderMarks = document.createElementNS(SvgNS, "circle");
+  shapeUnderMarks.setAttributeNS(null, "id", "underMark" + M);
+  shapeUnderMarks.setAttributeNS(null, "cx", XMark + 30);
+  shapeUnderMarks.setAttributeNS(null, "cy", YMark + 30);
   shapeUnderMarks.setAttributeNS(null, "r", 10);
   shapeUnderMarks.setAttributeNS(null, "fill", "rgba(0,0,0,0)");
   shapeUnderMarks.setAttributeNS(null, "stroke", "rgba(0,0,0,0)");
   shapeUnderMarks.setAttributeNS(null, "stroke-width", 1);
   shapeUnderMarks.setAttributeNS(null, "shape-rendering", "optimizeSpeed");
-  board.appendChild(shapeUnderMarks);
+  Board.appendChild(shapeUnderMarks);
+}
+
+//set values x y to draw marks inside mc
+function callDrawMarks() {
+  //draw marks
+  while (M < 225) {
+    M++;
+    if (M < 16) {
+      XMark = (M - 1) * 60;
+      YMark = 0;
+    } else if (M < 31) {
+      XMark = (M - 16) * 60;
+      YMark = 60;
+    } else if (M < 46) {
+      XMark = (M - 31) * 60;
+      YMark = 120;
+    } else if (M < 61) {
+      XMark = (M - 46) * 60;
+      YMark = 180;
+    } else if (M < 76) {
+      XMark = (M - 61) * 60;
+      YMark = 240;
+    } else if (M < 91) {
+      XMark = (M - 76) * 60;
+      YMark = 300;
+    } else if (M < 106) {
+      XMark = (M - 91) * 60;
+      YMark = 360;
+    } else if (M < 121) {
+      XMark = (M - 106) * 60;
+      YMark = 420;
+    } else if (M < 136) {
+      XMark = (M - 121) * 60;
+      YMark = 480;
+    } else if (M < 151) {
+      XMark = (M - 136) * 60;
+      YMark = 540;
+    } else if (M < 166) {
+      XMark = (M - 151) * 60;
+      YMark = 600;
+    } else if (M < 181) {
+      XMark = (M - 166) * 60;
+      YMark = 660;
+    } else if (M < 196) {
+      XMark = (M - 181) * 60;
+      YMark = 720;
+    } else if (M < 211) {
+      XMark = (M - 196) * 60;
+      YMark = 780;
+    } else if (M < 226) {
+      XMark = (M - 211) * 60;
+      YMark = 840;
+    }
+    drawMarks();
+  }
 }
 
 //clear marks
 function unClickSquare() {
   let m = 0;
-  squaresToGo = [];
+  SquaresToGo = [];
   while (m < 225) {
     m++;
-    document.getElementById("Mark" + m).setAttributeNS(null, "fill", "rgba(0,0,0,0.0)");
-    document.getElementById("Mark" + m).setAttributeNS(null, "stroke", "rgba(0,0,0,0.0)");
+    document.getElementById("Mark" + m).setAttributeNS(null, "fill", "rgba(0,0,0,0)");
+    document.getElementById("Mark" + m).setAttributeNS(null, "stroke", "rgba(0,0,0,0)");
     if (m < 65) {
-      document.getElementById("butSquare" + m).setAttributeNS(null, "fill", "rgba(0,0,0,0.0)");
+      document.getElementById("butSquare" + m).setAttributeNS(null, "fill", "rgba(0,0,0,0)");
     }
   }
 }
 
+///draw arrows to teach the game
+function drawMarker(i) {
+  MarkerControl++;
+
+  let xy = 0;
+
+  if (MarkerControl === 1) {
+
+    inti = i;
+    XLeaving = parseInt(document.getElementById("butSquare" + i).getAttribute("x")) + 30;
+    YLeaving = parseInt(document.getElementById("butSquare" + i).getAttribute("y")) + 30;
+
+    if (PiecesPosition[i - 1] === "O") {
+      ArrowColor = ColorOh;
+    } else if (PiecesPosition[i - 1] === PiecesPosition[i - 1].toUpperCase()) {
+      ArrowColor = ColorWhite;
+    } else {
+      ArrowColor = ColorBlack;
+    }
+  }
+
+  if (MarkerControl === 2) {
+
+    if (inti !== i) {
+      let xLanding = parseInt(document.getElementById("butSquare" + i).getAttribute("x")) + 30;
+      let yLanding = parseInt(document.getElementById("butSquare" + i).getAttribute("y")) + 30;
+
+      xy = XLeaving + "," + YLeaving + " " + xLanding + "," + yLanding;
+
+      const marker = document.createElementNS(SvgNS, "marker");
+      marker.setAttributeNS(null, "id", "marker" + MarkerCount);
+      marker.setAttributeNS(null, "fill", ArrowColor);
+      marker.setAttributeNS(null, 'refX', '1');
+      marker.setAttributeNS(null, 'refY', '2');
+      marker.setAttribute('markerUnits', 'strokeWidth');
+      marker.setAttribute('markerWidth', '10');
+      marker.setAttribute('markerHeight', '10');
+      marker.setAttributeNS(null, "orient", "auto-start-reverse");
+      var path = document.createElementNS(SvgNS, "path");
+      path.setAttributeNS(null, "d", "m 0 0 L 2 2 L 0 4 z");
+      marker.appendChild(path);
+      Board.appendChild(marker);
+
+      var polyline = document.createElementNS(SvgNS, "polyline");
+      polyline.setAttributeNS(null, "id", "polyline" + MarkerCount);
+      polyline.setAttributeNS(null, 'points', xy);
+      polyline.setAttributeNS(null, "fill", "none");
+      polyline.setAttributeNS(null, "stroke-linecap", "round");
+      polyline.setAttributeNS(null, "stroke-width", 7);
+      polyline.setAttributeNS(null, "stroke", ArrowColor);
+      polyline.setAttributeNS(null, 'marker-end', "url(#marker" + MarkerCount + ")");
+
+      Board.appendChild(polyline);
+
+      MarkerCount++;
+      MarkerControl = 0;
+    } else {
+      clearMarkers();
+    }
+  }
+
+}
+
+//clear draw arrows to teach the game
+function clearMarkers() {
+  if (MarkerCount > 0) {
+    let i = 0;
+    while (i < MarkerCount) {
+      document.getElementById("polyline" + i).remove();
+      document.getElementById("marker" + i).remove();
+
+      i++;
+    }
+  }
+  MarkerControl = 0;
+  MarkerCount = 0;
+}
+
 //draw buttons to click squares
 function drawButtons(i) {
-  const shape4 = document.createElementNS(svgNS, "rect");
-  shape4.setAttributeNS(null, "id", "but" + drawCanvas);
+  const shape4 = document.createElementNS(SvgNS, "rect");
+  shape4.setAttributeNS(null, "id", "but" + DrawCanvas);
   shape4.setAttributeNS(null, "width", 60);
   shape4.setAttributeNS(null, "height", 60);
-  shape4.setAttributeNS(null, "x", square_x);
-  shape4.setAttributeNS(null, "y", square_y);
+  shape4.setAttributeNS(null, "x", Square_x);
+  shape4.setAttributeNS(null, "y", Square_y);
   shape4.setAttributeNS(null, "fill", "transparent");
   shape4.setAttributeNS(null, "stroke-width", 0);
-  board.appendChild(shape4);
+  Board.appendChild(shape4);
 
   //double click
   function doubleClick() {
-    selectPieceStatus = 0;
-    reverseCode();
+    SelectPieceStatus = 0;
+    reversePieces();
+    clearMarkers();
   }
 
   function simpleClick() { // click
-    if (selectPieceStatus === 0) {
-      selectPieceStatus = 1;
-      bSqSel = i;
+    if (SelectPieceStatus === 0) {
+      SelectPieceStatus = 1;
+      BSqSel = i;
+      clearMarkers();
       clickSquare(i);
-    } else if (bSqSel === i) { //second click on same square
-      bSqSel = i;
-      selectPieceStatus = 0;
+    } else if (BSqSel === i) { //second click on same square
+      BSqSel = i;
+      SelectPieceStatus = 0;
       unClickSquare();
-    } else if (squaresToGo.includes(i)) { //second click on active squares to move
-      selectPieceStatus = 0;
-      unClickSquare();
-      if ((piecesPosition[bSqSel - 1] === piecesPosition[bSqSel - 1].toUpperCase() && turn === turn.toUpperCase()) || (piecesPosition[bSqSel - 1] === piecesPosition[bSqSel - 1].toLowerCase() && turn === turn.toLowerCase())) {
-        if (totalWCastles === 0) {
-          if (verseReverse === "wb") {
-            turn = "BLACK WINS";
-          } else {
-            turn = "WHITE WINS";
+    } else if (SquaresToGo.includes(i)) { //second click on active squares to move
+      LockFlipBoard = 1;
+      if ((PiecesPosition[BSqSel - 1] === PiecesPosition[BSqSel - 1].toUpperCase() && Turn === Turn.toUpperCase()) || (PiecesPosition[BSqSel - 1] === PiecesPosition[BSqSel - 1].toLowerCase() && Turn === Turn.toLowerCase())) {
+
+        let t = 0;
+        let transp = "rgba(200,50,0," + (t / 300) + ")";
+        let travel = setInterval(function() {
+
+          t++;
+          transp = "rgba(200,50,0," + (t / 300) + ")";
+
+          document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke", transp);
+          document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke-width", 3);
+
+          if (t > 250) {
+            clearInterval(travel);
+            document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke", "rgba(0,0,0,0)");
+            document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke-width", 0);
           }
-        }
-        if (totalBCastles === 0) {
-          if (verseReverse === "bw") {
-            turn = "BLACK WINS";
-          } else {
-            turn = "WHITE WINS";
+
+        }, 1);
+
+        Clo++;
+
+        Timer2 = setTimeout(function() {
+
+          if (Clo === 1) {
+
+            document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke", "rgba(0,0,0,0)");
+            document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke-width", 0);
+
+            SelectPieceStatus = 0;
+            unClickSquare();
+
+            if (TotalWCastles === 0) {
+              Turn = "BLACK WINS";
+            }
+            if (TotalBCastles === 0) {
+              Turn = "WHITE WINS";
+            }
+            if (TotalWCastles > 0 && TotalBCastles > 0) {
+              movingPiece(i);
+            }
+
+            BSqSel = i;
+
+            Clo = 0;
+            clearTimeout(Timer2);
+
+          } else if (Clo > 1) {
+
+            document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke", "rgba(0,0,0,0)");
+            document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke-width", 0);
+
+            SelectPieceStatus = 0;
+            unClickSquare();
+            BSqSel = i;
+
+            Clo = 0;
+            clearTimeout(Timer2);
+
           }
-        }
-        if (totalWCastles > 0 && totalBCastles > 0) {
-          movingPiece(i);
-        }
+          Clo = 0;
+
+        }, 900);
       }
-      bSqSel = i;
+
     } else {
-      selectPieceStatus = 1;
-      bSqSel = i;
-      clickSquare(i);
+
+      document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke", "rgba(0,0,0,0)");
+      document.getElementById("butSquare" + (i)).setAttributeNS(null, "stroke-width", 0);
+
+      SelectPieceStatus = 0;
+      unClickSquare();
+
     }
   }
 
   //execute actions onclick and double click
   function clicker() {
-    cli++;
-    clearTimeout(timer);
-    timer = setTimeout(function() {
-      if (cli === 1) {
+    Cli++;
+    clearTimeout(Timer);
+    Timer = setTimeout(function() {
+      if (Cli === 1) {
         simpleClick();
-        clearTimeout(timer);
-      } else if (cli === 2) {
-        doubleClick();
-        clearTimeout(timer);
+        clearTimeout(Timer);
+      } else if (Cli === 2) {
+        if (LockFlipBoard === 0) {
+          doubleClick();
+        }
+        clearTimeout(Timer);
       }
-      cli = 0;
+      Cli = 0;
     }, 200);
   }
 
   //clicker
-  const el = document.getElementById("but" + drawCanvas);
-  el.onclick = function() {
-    clicker();
+  const el = document.getElementById("but" + DrawCanvas);
+  el.onclick = function(event) {
+    if (event.altKey) {
+      drawMarker(i);
+    } else {
+      clicker();
+    }
   };
+
+
 }
 
 //start construct objects
-while (i < 64) {
-  i++;
-  evenOdd = i % 2;
-  drawCanvas = "Square" + i;
-  //row by row black and white
-  if (i < 9) {
-    rowEvenOdd = 1;
-    square_x = (i - 1) * 60;
-    square_y = 0;
-  } else if (i < 17) {
-    rowEvenOdd = 0;
-    square_x = (i - 9) * 60;
-    square_y = 60;
-  } else if (i < 25) {
-    rowEvenOdd = 1;
-    square_x = (i - 17) * 60;
-    square_y = 120;
-  } else if (i < 33) {
-    rowEvenOdd = 0;
-    square_x = (i - 25) * 60;
-    square_y = 180;
-  } else if (i < 41) {
-    rowEvenOdd = 1;
-    square_x = (i - 33) * 60;
-    square_y = 240;
-  } else if (i < 49) {
-    rowEvenOdd = 0;
-    square_x = (i - 41) * 60;
-    square_y = 300;
-  } else if (i < 57) {
-    rowEvenOdd = 1;
-    square_x = (i - 49) * 60;
-    square_y = 360;
-  } else {
-    rowEvenOdd = 0;
-    square_x = (i - 57) * 60;
-    square_y = 420;
-  }
+I = 0;
+while (I < 64) {
+  I++;
+  EvenOdd = I % 2;
+  DrawCanvas = "Square" + I;
+
+  //get x y squares to positioning
+  squarer(I);
+
   //define sequence of colors on board squares
-  if (rowEvenOdd === 0) {
-    if (evenOdd === 0) {
-      squareColor = "white";
+  if (RowEvenOdd === 0) {
+    if (EvenOdd === 0) {
+      SquareColor = "white";
     } else {
-      squareColor = "black";
+      SquareColor = "black";
     }
   } else {
-    if (evenOdd === 1) {
-      squareColor = "white";
+    if (EvenOdd === 1) {
+      SquareColor = "white";
     } else {
-      squareColor = "black";
+      SquareColor = "black";
     }
   }
   //loops to generate objects in Z axis
-  if (j === 0) {
+  if (J === 0) {
     drawSquares();
-  } else if (j === 1) {
+  } else if (J === 1) {
     drawBoardLetters();
-    i = 64;
-  } else if (j === 2) {
+    I = 64;
+  } else if (J === 2) {
     drawMarkMoves();
-    i = 64;
-  } else if (j === 3) {
+    I = 64;
+  } else if (J === 3) {
     setPieces();
-  } else if (j === 4) {
+  } else if (J === 4) {
     promoPieces();
-    i = 64;
-  } else if (j === 5) {
+    I = 64;
+  } else if (J === 5) {
     callDrawMarks();
-    i = 64;
-  } else if (j === 6) {
-    drawButtons(i);
+    I = 64;
+  } else if (J === 6) {
+    drawButtons(I);
   } else {
-    i = 65;
+    I = 65;
   }
   //stop it
-  if (i === 64) {
-    i = 0;
-    j++;
+  if (I === 64) {
+    I = 0;
+    J++;
   }
 }
 
@@ -848,44 +1006,75 @@ while (i < 64) {
 function fillerStroker(c) {
   switch (c) {
     case "turnover":
-      filler = "rgba(0,200,200,0.5)";
-      stroker = "rgba(0,0,0,0.3)";
+      Filler = "rgba(0,200,200,0.5)";
+      Stroker = "rgba(0,0,0,0.3)";
       break;
     case "empty":
-      filler = "rgba(200,200,200,0.5)";
-      stroker = "rgba(0,0,0,0.3)";
+      Filler = "rgba(200,200,200,0.5)";
+      Stroker = "rgba(0,0,0,0.3)";
       break;
     case "take":
-      filler = "rgba(255,50,50,0.5)";
-      stroker = "rgba(255,50,50,0.5)";
+      Filler = "rgba(255,50,50,0.5)";
+      Stroker = "rgba(255,50,50,0.5)";
       break;
     case "mate":
-      filler = "rgba(255,0,0,0.9)";
-      stroker = "rgba(100,0,0,0.9)";
+      Filler = "rgba(255,0,0,0.9)";
+      Stroker = "rgba(100,0,0,0.9)";
       break;
     case "disable":
-      filler = "rgba(0,0,0,0.0)";
-      stroker = "rgba(0,0,0,0.0)";
+      Filler = "rgba(0,0,0,0.0)";
+      Stroker = "rgba(0,0,0,0.0)";
       break;
     case "square":
-      filler = "rgba(0,50,100,0.5)";
-      stroker = "rgba(0,0,0,0.3)";
+      Filler = "rgba(0,50,100,0.5)";
+      Stroker = "rgba(0,0,0,0.3)";
       break;
     case "colorError":
-      filler = "rgba(143,19,233,0.7)";
-      stroker = "rgba(0,0,0,0.3)";
+      Filler = "rgba(143,19,233,0.7)";
+      Stroker = "rgba(0,0,0,0.3)";
       break;
   }
 }
 
-function countCastles(item) {
-  if (item === "C") {
-    totalWCastles++;
+function count888(item) {
+  if (item === "R") {
+    TotalWRooks++;
+  } else if (item === "r") {
+    TotalBRooks++;
+  } else if (item === "C") {
+    TotalWCastles++;
+    TotalWBishops++;
+    TotalWRooks++;
   } else if (item === "c") {
-    totalBCastles++;
+    TotalBCastles++;
+    TotalBBishops++;
+    TotalBRooks++;
+  } else if (item === "B") {
+    TotalWBishops++;
+  } else if (item === "b") {
+    TotalBBishops++;
+  } else if (item === "Q") {
+    TotalWBishops++;
+    TotalWRooks++;
+  } else if (item === "q") {
+    TotalBBishops++;
+    TotalBRooks++;
+  } else if (item === "N") {
+    TotalWBishops++;
+  } else if (item === "n") {
+    TotalBBishops++;
   }
 }
 
-piecesPosition.forEach(countCastles);
+function call888() {
+  TotalWCastles = 0;
+  TotalBCastles = 0;
+  TotalWBishops = 0;
+  TotalBBishops = 0;
+  TotalWRooks = 0;
+  TotalBRooks = 0;
+  PiecesPosition.forEach(count888);
+}
+call888();
 
 castlesInCheck(); //get first array with all castles in check

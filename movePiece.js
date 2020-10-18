@@ -73,8 +73,8 @@ function animePiece(leaving, landing, piecesToMove) {
       break;
   }
 
-  landX = parseInt(document.getElementById("Square" + landing).getAttributeNS(null, "x")) + 30;
-  landY = parseInt(document.getElementById("Square" + landing).getAttributeNS(null, "y")) + 30;
+  landX = parseInt(document.getElementById("butSquare" + landing).getAttributeNS(null, "x")) + 30;
+  landY = parseInt(document.getElementById("butSquare" + landing).getAttributeNS(null, "y")) + 30;
 
   speedX = leavingX > landX ? parseInt((leavingX - landX) / 30) : speedX = leavingX < landX ? parseInt((landX - leavingX) / 30) : 0;
   speedY = leavingY > landY ? parseInt((leavingY - landY) / 30) : speedY = leavingY < landY ? parseInt((landY - leavingY) / 30) : 0;
@@ -141,673 +141,685 @@ function animePiece(leaving, landing, piecesToMove) {
         document.getElementById("mMove2").setAttributeNS(null, "x", landX - 30);
         document.getElementById("mMove2").setAttributeNS(null, "y", landY - 30);
 
-        if (promoControl === 1) {
-          //pawn's promotion
-          if (piecesPosition[landing - 1] === piecesPosition[landing - 1].toUpperCase()) {
-            if (verseReverse === "wb") {
-              pStroke1 = "rgba(0,0,0,1.0)";
-              pStroke2 = "rgba(255,255,255,1.0)";
-            } else {
-              pStroke1 = "rgba(255,255,255,1.0)";
-              pStroke2 = "rgba(0,0,0,1.0)";
-            }
+        //promotion
+        if (PromoControl === 1) {
+          //pawn's Promotion
+          let pStroke1;
+          let pStroke2;
+          if (PiecesPosition[landing - 1] === PiecesPosition[landing - 1].toUpperCase()) {
+            pStroke1 = "rgba(0,0,0,1.0)";
+            pStroke2 = "rgba(255,255,255,1.0)";
           } else {
-            if (verseReverse === "bw") {
-              pStroke1 = "rgba(0,0,0,1.0)";
-              pStroke2 = "rgba(255,255,255,1.0)";
-            } else {
-              pStroke1 = "rgba(255,255,255,1.0)";
-              pStroke2 = "rgba(0,0,0,1.0)";
-            }
+            pStroke1 = "rgba(255,255,255,1.0)";
+            pStroke2 = "rgba(0,0,0,1.0)";
           }
 
-          if (piecesToMove === "EMI" || piecesToMove === "E") {
+          if (extPiecesPosition[landing - 1] !== 0 && (PiecesToRemove === "EMI" || PiecesToRemove === "E")) {
             document.getElementById("extA" + extPiecesPosition[landing - 1]).setAttributeNS(null, "stroke", "transparent");
             document.getElementById("extB" + extPiecesPosition[landing - 1]).setAttributeNS(null, "stroke", "transparent");
           }
-          if (piecesToMove === "EMI" || piecesToMove === "M") {
-            document.getElementById("midA" + extPiecesPosition[landing - 1]).setAttributeNS(null, "stroke", "transparent");
-            document.getElementById("midB" + extPiecesPosition[landing - 1]).setAttributeNS(null, "stroke", "transparent");
+          if (midPiecesPosition[landing - 1] !== 0 && (PiecesToRemove === "EMI" || PiecesToRemove === "M")) {
+            document.getElementById("midA" + midPiecesPosition[landing - 1]).setAttributeNS(null, "stroke", "transparent");
+            document.getElementById("midB" + midPiecesPosition[landing - 1]).setAttributeNS(null, "stroke", "transparent");
           }
-          if (piecesToMove === "EMI" || piecesToMove === "I") {
-            document.getElementById("intA" + extPiecesPosition[landing - 1]).setAttributeNS(null, "fill", "transparent");
-            document.getElementById("intB" + extPiecesPosition[landing - 1]).setAttributeNS(null, "fill", "transparent");
+          if (intPiecesPosition[landing - 1] && (PiecesToRemove === "EMI" || PiecesToRemove === "I")) {
+            document.getElementById("intA" + intPiecesPosition[landing - 1]).setAttributeNS(null, "fill", "transparent");
+            document.getElementById("intB" + intPiecesPosition[landing - 1]).setAttributeNS(null, "fill", "transparent");
           }
 
           extPiecesPosition[landing - 1] = 0;
-          midPiecesPosition[landing - 1] = promoID;
-          intPiecesPosition[landing - 1] = promoID;
+          midPiecesPosition[landing - 1] = PromoID;
+          intPiecesPosition[landing - 1] = PromoID;
 
-          document.getElementById("midA" + promoID).setAttributeNS(null, "stroke", pStroke1);
-          document.getElementById("midB" + promoID).setAttributeNS(null, "stroke", pStroke2);
-          document.getElementById("intA" + promoID).setAttributeNS(null, "fill", pStroke1);
-          document.getElementById("intB" + promoID).setAttributeNS(null, "fill", pStroke2);
+          document.getElementById("midA" + PromoID).setAttributeNS(null, "stroke", pStroke1);
+          document.getElementById("midB" + PromoID).setAttributeNS(null, "stroke", pStroke2);
+          document.getElementById("intA" + PromoID).setAttributeNS(null, "fill", pStroke1);
+          document.getElementById("intB" + PromoID).setAttributeNS(null, "fill", pStroke2);
 
 
-          document.getElementById("midA" + promoID).setAttributeNS(null, "cx", landX);
-          document.getElementById("midA" + promoID).setAttributeNS(null, "cy", landY);
-          document.getElementById("midB" + promoID).setAttributeNS(null, "cx", landX);
-          document.getElementById("midB" + promoID).setAttributeNS(null, "cy", landY);
+          document.getElementById("midA" + PromoID).setAttributeNS(null, "cx", landX);
+          document.getElementById("midA" + PromoID).setAttributeNS(null, "cy", landY);
+          document.getElementById("midB" + PromoID).setAttributeNS(null, "cx", landX);
+          document.getElementById("midB" + PromoID).setAttributeNS(null, "cy", landY);
 
-          document.getElementById("intA" + promoID).setAttributeNS(null, "cx", landX);
-          document.getElementById("intA" + promoID).setAttributeNS(null, "cy", landY);
-          document.getElementById("intB" + promoID).setAttributeNS(null, "cx", landX);
-          document.getElementById("intB" + promoID).setAttributeNS(null, "cy", landY);
+          document.getElementById("intA" + PromoID).setAttributeNS(null, "cx", landX);
+          document.getElementById("intA" + PromoID).setAttributeNS(null, "cy", landY);
+          document.getElementById("intB" + PromoID).setAttributeNS(null, "cx", landX);
+          document.getElementById("intB" + PromoID).setAttributeNS(null, "cy", landY);
 
-          promoID++;
-          promoControl = 0;
+          PromoID++;
+          PromoControl = 0;
         }
+        LockFlipBoard = 0;
       }
     }, 1);
   };
+  
   animeEMI();
+}
+
+let fillColor = "rgba(0,0,0,0.0)";
+let strokeColor = "rgba(0,0,0,0.0)";
+
+function fillStroke(c) {
+  switch (c) {
+    case "disable":
+      fillColor = "rgba(0,0,0,0.0)";
+      strokeColor = "rgba(0,0,0,0.0)";
+      break;
+    case "white":
+      fillColor = "rgba(255,255,255,1.0)";
+      strokeColor = "rgba(0,0,0,1.0)";
+      break;
+    case "black":
+      fillColor = "rgba(0,0,0,1.0)";
+      strokeColor = "rgba(255,255,255,1.0)";
+      break;
+  }
+}
+
+function coloring(p, q, landing) {
+  let pSq;
+  if (p === "ext") {
+    pSq = extPiecesPosition[landing - 1];
+  } else if (p === "mid") {
+    pSq = midPiecesPosition[landing - 1];
+  } else if (p === "int") {
+    pSq = intPiecesPosition[landing - 1];
+  }
+  document.getElementById(p + "A" + pSq).setAttributeNS(null, q, strokeColor);
+  document.getElementById(p + "B" + pSq).setAttributeNS(null, q, fillColor);
 }
 
 function coloringPieces(leaving, landing) {
 
-  let fillColor = "rgba(0,0,0,0.0)";
-  let strokeColor = "rgba(0,0,0,0.0)";
-
-  function fillStroke(c) {
-    switch (c) {
-      case "disable":
-        fillColor = "rgba(0,0,0,0.0)";
-        strokeColor = "rgba(0,0,0,0.0)";
-        break;
-      case "white":
-        if (verseReverse === "wb") {
-          fillColor = "rgba(255,255,255,1.0)";
-          strokeColor = "rgba(0,0,0,1.0)";
-        } else {
-          fillColor = "rgba(0,0,0,1.0)";
-          strokeColor = "rgba(255,255,255,1.0)";
-        }
-        break;
-      case "black":
-        if (verseReverse === "bw") {
-          fillColor = "rgba(255,255,255,1.0)";
-          strokeColor = "rgba(0,0,0,1.0)";
-        } else {
-          fillColor = "rgba(0,0,0,1.0)";
-          strokeColor = "rgba(255,255,255,1.0)";
-        }
-        break;
-    }
-  }
-
-  function coloring(p, q) {
-    let pSq;
-    if (p === "ext") {
-      pSq = extPiecesPosition[landing - 1];
-    } else if (p === "mid") {
-      pSq = midPiecesPosition[landing - 1];
-    } else if (p === "int") {
-      pSq = intPiecesPosition[landing - 1];
-    }
-    document.getElementById(p + "A" + pSq).setAttributeNS(null, q, strokeColor);
-    document.getElementById(p + "B" + pSq).setAttributeNS(null, q, fillColor);
-  }
-
-  if (piecesPosition[landing - 1] === "C" || piecesPosition[landing - 1] === "c") {
+  if (PiecesPosition[landing - 1] === "C" || PiecesPosition[landing - 1] === "c") {
     fillStroke("disable");
-    coloring("ext", "stroke");
-    coloring("mid", "stroke");
-    coloring("int", "fill");
+    coloring("ext", "stroke", landing);
+    coloring("mid", "stroke", landing);
+    coloring("int", "fill", landing);
     extPiecesPosition[landing - 1] = 0;
     midPiecesPosition[landing - 1] = 0;
     intPiecesPosition[landing - 1] = 0;
 
-  } else if (piecesPosition[landing - 1] === "P") {
-    if (piecesPosition[leaving] === "c" || piecesPosition[leaving] === "p" || piecesPosition[leaving] === "r" || piecesPosition[leaving] === "n") {
+  } else if (PiecesPosition[landing - 1] === "P") {
+    if (PiecesPosition[leaving] === "c" || PiecesPosition[leaving] === "p" || PiecesPosition[leaving] === "r" || PiecesPosition[leaving] === "n") {
       fillStroke("disable");
-      coloring("ext", "stroke");
+      coloring("ext", "stroke", landing);
       extPiecesPosition[landing - 1] = 0;
-    } else if (piecesPosition[leaving] === "b" || piecesPosition[leaving] === "q") {
+    } else if (PiecesPosition[leaving] === "b" || PiecesPosition[leaving] === "q") {
       fillStroke("black");
-      coloring("ext", "stroke");
+      coloring("ext", "stroke", landing);
     }
 
-  } else if (piecesPosition[landing - 1] === "p") {
-    if (piecesPosition[leaving] === "C" || piecesPosition[leaving] === "P" || piecesPosition[leaving] === "R" || piecesPosition[leaving] === "N") {
+  } else if (PiecesPosition[landing - 1] === "p") {
+    if (PiecesPosition[leaving] === "C" || PiecesPosition[leaving] === "P" || PiecesPosition[leaving] === "R" || PiecesPosition[leaving] === "N") {
       fillStroke("disable");
-      coloring("ext", "stroke");
+      coloring("ext", "stroke", landing);
       extPiecesPosition[landing - 1] = 0;
-    } else if (piecesPosition[leaving] === "B" || piecesPosition[leaving] === "Q") {
+    } else if (PiecesPosition[leaving] === "B" || PiecesPosition[leaving] === "Q") {
       fillStroke("white");
-      coloring("ext", "stroke");
+      coloring("ext", "stroke", landing);
     }
 
-  } else if (piecesPosition[landing - 1] === "B") {
-    if (piecesPosition[leaving] === "b" || piecesPosition[leaving] === "q") {
+  } else if (PiecesPosition[landing - 1] === "B") {
+    if (PiecesPosition[leaving] === "b" || PiecesPosition[leaving] === "q") {
       fillStroke("disable");
-      coloring("mid", "stroke");
+      coloring("mid", "stroke", landing);
       midPiecesPosition[landing - 1] = 0;
-    } else if (piecesPosition[leaving] === "c") {
-      if (blackCastlesInCheck.includes(bSqSel)) {
+    } else if (PiecesPosition[leaving] === "c") {
+      if (BlackCastlesInCheck.includes(BSqSel)) {
         fillStroke("disable");
-        coloring("mid", "stroke");
+        coloring("mid", "stroke", landing);
         midPiecesPosition[landing - 1] = 0;
       } else {
         fillStroke("black");
-        coloring("mid", "stroke");
+        coloring("mid", "stroke", landing);
       }
-    } else if (piecesPosition[leaving] === "p" || piecesPosition[leaving] === "n" || piecesPosition[leaving] === "r") {
+    } else if (PiecesPosition[leaving] === "p" || PiecesPosition[leaving] === "n" || PiecesPosition[leaving] === "r") {
       fillStroke("black");
-      coloring("mid", "stroke");
+      coloring("mid", "stroke", landing);
     }
 
-  } else if (piecesPosition[landing - 1] === "b") {
-    if (piecesPosition[leaving] === "B" || piecesPosition[leaving] === "Q") {
+  } else if (PiecesPosition[landing - 1] === "b") {
+    if (PiecesPosition[leaving] === "B" || PiecesPosition[leaving] === "Q") {
       fillStroke("disable");
-      coloring("mid", "stroke");
+      coloring("mid", "stroke", landing);
       midPiecesPosition[landing - 1] = 0;
-    } else if (piecesPosition[leaving] === "C") {
-      if (whiteCastlesInCheck.includes(bSqSel)) {
+    } else if (PiecesPosition[leaving] === "C") {
+      if (WhiteCastlesInCheck.includes(BSqSel)) {
         fillStroke("disable");
-        coloring("mid", "stroke");
+        coloring("mid", "stroke", landing);
         midPiecesPosition[landing - 1] = 0;
       } else {
         fillStroke("white");
-        coloring("mid", "stroke");
+        coloring("mid", "stroke", landing);
       }
-    } else if (piecesPosition[leaving] === "P" || piecesPosition[leaving] === "N" || piecesPosition[leaving] === "R") {
+    } else if (PiecesPosition[leaving] === "P" || PiecesPosition[leaving] === "N" || PiecesPosition[leaving] === "R") {
       fillStroke("white");
-      coloring("mid", "stroke");
+      coloring("mid", "stroke", landing);
     }
 
-  } else if (piecesPosition[landing - 1] === "Q") {
-    if (piecesPosition[leaving] === "b" || piecesPosition[leaving] === "q" || piecesPosition[leaving] === "r" || piecesPosition[leaving] === "c") {
+  } else if (PiecesPosition[landing - 1] === "Q") {
+    if (PiecesPosition[leaving] === "b" || PiecesPosition[leaving] === "q" || PiecesPosition[leaving] === "r" || PiecesPosition[leaving] === "c") {
       fillStroke("disable");
-      coloring("mid", "stroke");
-      coloring("int", "fill");
+      coloring("mid", "stroke", landing);
+      coloring("int", "fill", landing);
       midPiecesPosition[landing - 1] = 0;
       intPiecesPosition[landing - 1] = 0;
-    } else if (piecesPosition[leaving] === "p" || piecesPosition[leaving] === "n") {
+    } else if (PiecesPosition[leaving] === "p" || PiecesPosition[leaving] === "n") {
       fillStroke("black");
-      coloring("mid", "stroke");
-      coloring("int", "fill");
+      coloring("mid", "stroke", landing);
+      coloring("int", "fill", landing);
     }
 
-  } else if (piecesPosition[landing - 1] === "q") {
-    if (piecesPosition[leaving] === "B" || piecesPosition[leaving] === "C" || piecesPosition[leaving] === "Q" || piecesPosition[leaving] === "R") {
+  } else if (PiecesPosition[landing - 1] === "q") {
+    if (PiecesPosition[leaving] === "B" || PiecesPosition[leaving] === "C" || PiecesPosition[leaving] === "Q" || PiecesPosition[leaving] === "R") {
       fillStroke("disable");
-      coloring("mid", "stroke");
-      coloring("int", "fill");
+      coloring("mid", "stroke", landing);
+      coloring("int", "fill", landing);
       midPiecesPosition[landing - 1] = 0;
       intPiecesPosition[landing - 1] = 0;
-    } else if (piecesPosition[leaving] === "P" || piecesPosition[leaving] === "N") {
+    } else if (PiecesPosition[leaving] === "P" || PiecesPosition[leaving] === "N") {
       fillStroke("white");
-      coloring("mid", "stroke");
-      coloring("int", "fill");
+      coloring("mid", "stroke", landing);
+      coloring("int", "fill", landing);
     }
 
-  } else if (piecesPosition[landing - 1] === "R") {
-    if (piecesPosition[leaving] === "b" || piecesPosition[leaving] === "q") {
+  } else if (PiecesPosition[landing - 1] === "R") {
+    if (PiecesPosition[leaving] === "b" || PiecesPosition[leaving] === "q") {
       fillStroke("black");
-      coloring("int", "fill");
-    } else if (piecesPosition[leaving] === "c" || piecesPosition[leaving] === "p" || piecesPosition[leaving] === "n" || piecesPosition[leaving] === "r") {
+      coloring("int", "fill", landing);
+    } else if (PiecesPosition[leaving] === "c" || PiecesPosition[leaving] === "p" || PiecesPosition[leaving] === "n" || PiecesPosition[leaving] === "r") {
       fillStroke("disable");
-      coloring("int", "fill");
+      coloring("int", "fill", landing);
       intPiecesPosition[landing - 1] = 0;
     }
 
-  } else if (piecesPosition[landing - 1] === "r") {
-    if (piecesPosition[leaving] === "B" || piecesPosition[leaving] === "Q") {
+  } else if (PiecesPosition[landing - 1] === "r") {
+    if (PiecesPosition[leaving] === "B" || PiecesPosition[leaving] === "Q") {
       fillStroke("white");
-      coloring("int", "fill");
-    } else if (piecesPosition[leaving] === "C" || piecesPosition[leaving] === "P" || piecesPosition[leaving] === "N" || piecesPosition[leaving] === "R") {
+      coloring("int", "fill", landing);
+    } else if (PiecesPosition[leaving] === "C" || PiecesPosition[leaving] === "P" || PiecesPosition[leaving] === "N" || PiecesPosition[leaving] === "R") {
       fillStroke("disable");
-      coloring("int", "fill");
+      coloring("int", "fill", landing);
       intPiecesPosition[landing - 1] = 0;
     }
 
-  } else if (piecesPosition[landing - 1] === "N") {
-    if (piecesPosition[leaving] === "b" || piecesPosition[leaving] === "q" || piecesPosition[leaving] === "c" || piecesPosition[leaving] === "p" || piecesPosition[leaving] === "n") {
+  } else if (PiecesPosition[landing - 1] === "N") {
+    if (PiecesPosition[leaving] === "b" || PiecesPosition[leaving] === "q" || PiecesPosition[leaving] === "c" || PiecesPosition[leaving] === "p" || PiecesPosition[leaving] === "n") {
       fillStroke("disable");
-      coloring("ext", "stroke");
-      coloring("mid", "stroke");
+      coloring("ext", "stroke", landing);
+      coloring("mid", "stroke", landing);
       extPiecesPosition[landing - 1] = 0;
       midPiecesPosition[landing - 1] = 0;
-    } else if (piecesPosition[leaving] === "r") {
+    } else if (PiecesPosition[leaving] === "r") {
       fillStroke("black");
-      coloring("ext", "stroke");
-      coloring("mid", "stroke");
+      coloring("ext", "stroke", landing);
+      coloring("mid", "stroke", landing);
     }
 
-  } else if (piecesPosition[landing - 1] === "n") {
-    if (piecesPosition[leaving] === "B" || piecesPosition[leaving] === "Q" || piecesPosition[leaving] === "C" || piecesPosition[leaving] === "P" || piecesPosition[leaving] === "N") {
+  } else if (PiecesPosition[landing - 1] === "n") {
+    if (PiecesPosition[leaving] === "B" || PiecesPosition[leaving] === "Q" || PiecesPosition[leaving] === "C" || PiecesPosition[leaving] === "P" || PiecesPosition[leaving] === "N") {
       fillStroke("disable");
-      coloring("ext", "stroke");
-      coloring("mid", "stroke");
+      coloring("ext", "stroke", landing);
+      coloring("mid", "stroke", landing);
       extPiecesPosition[landing - 1] = 0;
       midPiecesPosition[landing - 1] = 0;
-    } else if (piecesPosition[leaving] === "R") {
+    } else if (PiecesPosition[leaving] === "R") {
       fillStroke("white");
-      coloring("ext", "stroke");
-      coloring("mid", "stroke");
+      coloring("ext", "stroke", landing);
+      coloring("mid", "stroke", landing);
     }
   }
 }
 
 function movingPiece(i) {
 
-  turn = piecesPosition[bSqSel - 1] === piecesPosition[bSqSel - 1].toUpperCase() ? "b" : "W";
-  matchStatus = 1;
+  Turn = PiecesPosition[BSqSel - 1] === PiecesPosition[BSqSel - 1].toUpperCase() ? "b" : "W";
 
-  mMoveLeaving = i;
-  mMoveLanding = bSqSel;
-  let leaving = bSqSel - 1;
+  MMoveLeaving = i;
+  MMoveLanding = BSqSel;
+  let leaving = BSqSel - 1;
   let landing = i;
 
   coloringPieces(leaving, landing);
 
-  landingsAgain = 0;
-  again = 0;
-  switch (piecesPosition[bSqSel - 1]) { //identify leaving piece
+  LandingsAgain = 0;
+  Again = 0;
+  switch (PiecesPosition[BSqSel - 1]) { //identify leaving piece
     case "C":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "c":
         case "n":
+        case "q":
         case "r":
-          piecesPosition[bSqSel - 1] = whiteCastlesInCheck.includes(bSqSel) ? "O" : "Q";
+          PiecesPosition[BSqSel - 1] = WhiteCastlesInCheck.includes(BSqSel) ? "O" : "Q";
 
-          if (piecesPosition[bSqSel - 1] === "O") {
+          if (PiecesPosition[BSqSel - 1] === "O") {
+            if (TotalWCastles > 1 && i < 9) {
+              PiecesPosition[i - 1] = "Q";
+              PromoControl = 1;
+              PiecesToRemove = "EMI";
+            } else {
+              PiecesPosition[i - 1] = "C";
+            }
             animePiece(leaving, landing, "EMI");
-            if (i < 9 && totalWCastles > 1) {
-              piecesPosition[i - 1] = "Q";
-              promoControl = 1;
-            } else {
-              piecesPosition[i - 1] = "C";
-            }
 
-          } else if (piecesPosition[bSqSel - 1] === "Q") {
-            animePiece(leaving, landing, "E");
-
+          } else if (PiecesPosition[BSqSel - 1] === "Q") {
             if (i < 9) {
-              piecesPosition[i - 1] = "Q";
-              promoControl = 1;
+              PiecesPosition[i - 1] = "Q";
+              PromoControl = 1;
+              PiecesToRemove = "EMI";
             } else {
-              piecesPosition[i - 1] = "P";
+              PiecesPosition[i - 1] = "P";
             }
+            animePiece(leaving, landing, "E");
           }
           break;
         case "p":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "C";
           animePiece(leaving, landing, "EMI");
-          piecesPosition[i - 1] = "C";
           break;
         case "b":
-          piecesPosition[bSqSel - 1] = whiteCastlesInCheck.includes(bSqSel) ? "O" : "Q";
+          PiecesPosition[BSqSel - 1] = WhiteCastlesInCheck.includes(BSqSel) ? "O" : "Q";
 
-          if (piecesPosition[bSqSel - 1] === "O") {
+          if (PiecesPosition[BSqSel - 1] === "O") {
+            PiecesPosition[i - 1] = "C";
             animePiece(leaving, landing, "EMI");
-            piecesPosition[i - 1] = "C";
 
-          } else if (piecesPosition[bSqSel - 1] === "Q") {
+          } else if (PiecesPosition[BSqSel - 1] === "Q") {
+            PiecesPosition[i - 1] = "N";
             animePiece(leaving, landing, "E");
-            piecesPosition[i - 1] = "N";
           }
           break;
-        case "q":
-          piecesPosition[bSqSel - 1] = "O";
-          animePiece(leaving, landing, "EMI");
-          piecesPosition[i - 1] = "C";
-          break;
         case "B":
-          piecesPosition[bSqSel - 1] = "Q";
+          PiecesPosition[BSqSel - 1] = "Q";
+          PiecesPosition[i - 1] = "N";
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "N";
           break;
         case "Q":
-          piecesPosition[bSqSel - 1] = "Q";
+          PiecesPosition[BSqSel - 1] = "Q";
+          PiecesPosition[i - 1] = "C";
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "C";
           break;
       }
       break;
     case "c":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "C":
         case "N":
+        case "Q":
         case "R":
-          piecesPosition[bSqSel - 1] = blackCastlesInCheck.includes(bSqSel) ? "O" : "q";
+          PiecesPosition[BSqSel - 1] = BlackCastlesInCheck.includes(BSqSel) ? "O" : "q";
 
-          if (piecesPosition[bSqSel - 1] === "O") {
+          if (PiecesPosition[BSqSel - 1] === "O") {
+            if (TotalBCastles > 1 && i > 56) {
+              PiecesPosition[i - 1] = "q";
+              PromoControl = 1;
+              PiecesToRemove = "EMI";
+            } else {
+              PiecesPosition[i - 1] = "c";
+            }
             animePiece(leaving, landing, "EMI");
-            if (i > 56 && totalBCastles > 1) {
-              piecesPosition[i - 1] = "q";
-              promoControl = 1;
-            } else {
-              piecesPosition[i - 1] = "c";
-            }
-
-          } else if (piecesPosition[bSqSel - 1] === "q") {
-            animePiece(leaving, landing, "E");
+          } else if (PiecesPosition[BSqSel - 1] === "q") {
             if (i > 56) {
-              piecesPosition[i - 1] = "q";
-              promoControl = 1;
+              PiecesPosition[i - 1] = "q";
+              PromoControl = 1;
+              PiecesToRemove = "EMI";
             } else {
-              piecesPosition[i - 1] = "p";
+              PiecesPosition[i - 1] = "p";
             }
+            animePiece(leaving, landing, "E");
           }
           break;
         case "P":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "c";
           animePiece(leaving, landing, "EMI");
-          piecesPosition[i - 1] = "c";
           break;
         case "B":
-          piecesPosition[bSqSel - 1] = blackCastlesInCheck.includes(bSqSel) ? "O" : "q";
+          PiecesPosition[BSqSel - 1] = BlackCastlesInCheck.includes(BSqSel) ? "O" : "q";
 
-          if (piecesPosition[bSqSel - 1] === "O") {
+          if (PiecesPosition[BSqSel - 1] === "O") {
+            PiecesPosition[i - 1] = "c";
             animePiece(leaving, landing, "EMI");
-            piecesPosition[i - 1] = "c";
 
-          } else if (piecesPosition[bSqSel - 1] === "q") {
+          } else if (PiecesPosition[BSqSel - 1] === "q") {
+            PiecesPosition[i - 1] = "n";
             animePiece(leaving, landing, "E");
-            piecesPosition[i - 1] = "n";
           }
           break;
-        case "Q":
-          piecesPosition[bSqSel - 1] = "O";
-          animePiece(leaving, landing, "EMI");
-          piecesPosition[i - 1] = "c";
-          break;
         case "b":
-          piecesPosition[bSqSel - 1] = "q";
+          PiecesPosition[BSqSel - 1] = "q";
+          PiecesPosition[i - 1] = "n";
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "n";
           break;
         case "q":
-          piecesPosition[bSqSel - 1] = "q";
+          PiecesPosition[BSqSel - 1] = "q";
+          PiecesPosition[i - 1] = "c";
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "c";
           break;
       }
       break;
     case "P":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "c":
         case "r":
         case "n":
         case "p":
-          piecesPosition[bSqSel - 1] = "O";
-          animePiece(leaving, landing, "E");
+          PiecesPosition[BSqSel - 1] = "O";
 
           if (i < 9) {
-            piecesPosition[i - 1] = "Q";
-            promoControl = 1;
+            PiecesPosition[i - 1] = "Q";
+            PromoControl = 1;
+            PiecesToRemove = "E";
           } else {
-            if (i < 9) {
-              piecesPosition[i - 1] = "Q";
-              promoControl = 1;
-            } else {
-              piecesPosition[i - 1] = "P";
-            }
+            PiecesPosition[i - 1] = "P";
           }
+          animePiece(leaving, landing, "E");
 
           break;
         case "q":
         case "Q":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          if (i < 9) {
+            PiecesPosition[i - 1] = "Q";
+            PromoControl = 1;
+            PiecesToRemove = "EMI";
+          } else {
+            PiecesPosition[i - 1] = "C";
+          }
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "C";
           break;
         case "B":
         case "b":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "N";
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "N";
           break;
       }
       break;
     case "p":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "C":
         case "R":
         case "N":
         case "P":
-          piecesPosition[bSqSel - 1] = "O";
-          animePiece(leaving, landing, "E");
+          PiecesPosition[BSqSel - 1] = "O";
           if (i > 56) {
-            piecesPosition[i - 1] = "q";
-            promoControl = 1;
+            PiecesPosition[i - 1] = "q";
+            PromoControl = 1;
+            PiecesToRemove = "E";
           } else {
-            piecesPosition[i - 1] = "p";
+            PiecesPosition[i - 1] = "p";
           }
+          animePiece(leaving, landing, "E");
           break;
         case "Q":
         case "q":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          if (i > 56) {
+            PiecesPosition[i - 1] = "q";
+            PromoControl = 1;
+            PiecesToRemove = "EMI";
+          } else {
+            PiecesPosition[i - 1] = "c";
+          }
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "c";
           break;
         case "b":
         case "B":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "n";
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "n";
           break;
       }
       break;
     case "Q":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "c":
         case "b":
         case "n":
         case "q":
-          piecesPosition[bSqSel - 1] = "R";
+          PiecesPosition[BSqSel - 1] = "R";
+          PiecesPosition[i - 1] = "B";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "B";
           break;
         case "r":
         case "R":
-          piecesPosition[bSqSel - 1] = "R";
+          PiecesPosition[BSqSel - 1] = "R";
+          PiecesPosition[i - 1] = "Q";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "Q";
           break;
         case "p":
         case "P":
-          piecesPosition[bSqSel - 1] = "R";
+          PiecesPosition[BSqSel - 1] = "R";
+          PiecesPosition[i - 1] = "N";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "N";
           break;
       }
       break;
     case "q":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "C":
         case "B":
         case "N":
         case "Q":
-          piecesPosition[bSqSel - 1] = "r";
+          PiecesPosition[BSqSel - 1] = "r";
+          PiecesPosition[i - 1] = "b";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "b";
           break;
         case "R":
         case "r":
-          piecesPosition[bSqSel - 1] = "r";
+          PiecesPosition[BSqSel - 1] = "r";
+          PiecesPosition[i - 1] = "q";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "q";
           break;
         case "P":
         case "p":
-          piecesPosition[bSqSel - 1] = "r";
+          PiecesPosition[BSqSel - 1] = "r";
+          PiecesPosition[i - 1] = "n";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "n";
           break;
       }
       break;
     case "B":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "c":
         case "b":
         case "n":
         case "q":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "B";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "B";
           break;
         case "r":
         case "R":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "Q";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "Q";
           break;
         case "p":
         case "P":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "N";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "N";
           break;
       }
       break;
     case "b":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "C":
         case "B":
         case "N":
         case "Q":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "b";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "b";
           break;
         case "R":
         case "r":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "q";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "q";
           break;
         case "P":
         case "p":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "n";
           animePiece(leaving, landing, "M");
-          piecesPosition[i - 1] = "n";
           break;
       }
       break;
     case "R":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "p":
         case "c":
         case "q":
         case "r":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "R";
           animePiece(leaving, landing, "I");
-          piecesPosition[i - 1] = "R";
           break;
         case "b":
         case "B":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "Q";
           animePiece(leaving, landing, "I");
-          piecesPosition[i - 1] = "Q";
           break;
         case "n":
         case "N":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          if (i < 9) {
+            PiecesPosition[i - 1] = "Q";
+            PromoControl = 1;
+            PiecesToRemove = "EMI";
+          } else {
+            PiecesPosition[i - 1] = "C";
+          }
           animePiece(leaving, landing, "I");
-          piecesPosition[i - 1] = "C";
           break;
       }
       break;
     case "r":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "P":
         case "C":
         case "Q":
         case "R":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "r";
           animePiece(leaving, landing, "I");
-          piecesPosition[i - 1] = "r";
           break;
         case "B":
         case "b":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          PiecesPosition[i - 1] = "q";
           animePiece(leaving, landing, "I");
-          piecesPosition[i - 1] = "q";
           break;
         case "N":
         case "n":
-          piecesPosition[bSqSel - 1] = "O";
+          PiecesPosition[BSqSel - 1] = "O";
+          if (i > 56) {
+            PiecesPosition[i - 1] = "q";
+            PromoControl = 1;
+            PiecesToRemove = "EMI";
+          } else {
+            PiecesPosition[i - 1] = "c";
+          }
           animePiece(leaving, landing, "I");
-          piecesPosition[i - 1] = "c";
           break;
       }
       break;
     case "N":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "p":
         case "c":
         case "r":
         case "n":
-          piecesPosition[bSqSel - 1] = "B";
-          animePiece(leaving, landing, "E");
+          PiecesPosition[BSqSel - 1] = "B";
           if (i < 9) {
-            piecesPosition[i - 1] = "Q";
-            promoControl = 1;
+            PiecesPosition[i - 1] = "Q";
+            PromoControl = 1;
+            PiecesToRemove = "EMI";
           } else {
-            piecesPosition[i - 1] = "P";
+            PiecesPosition[i - 1] = "P";
           }
+          animePiece(leaving, landing, "E");
           break;
         case "b":
         case "B":
-          piecesPosition[bSqSel - 1] = "B";
+          PiecesPosition[BSqSel - 1] = "B";
+          PiecesPosition[i - 1] = "N";
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "N";
           break;
         case "q":
         case "Q":
-          piecesPosition[bSqSel - 1] = "B";
+          PiecesPosition[BSqSel - 1] = "B";
+          if (i < 9) {
+            PiecesPosition[i - 1] = "Q";
+            PromoControl = 1;
+            PiecesToRemove = "EMI";
+          } else {
+            PiecesPosition[i - 1] = "C";
+          }
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "C";
           break;
       }
       break;
     case "n":
-      switch (piecesPosition[i - 1]) { //identify if pieces in landing square
+      switch (PiecesPosition[i - 1]) { //identify if pieces in landing square
         case "O":
         case "P":
         case "C":
         case "R":
         case "N":
-          piecesPosition[bSqSel - 1] = "b";
-          animePiece(leaving, landing, "E");
+          PiecesPosition[BSqSel - 1] = "b";
           if (i > 56) {
-            piecesPosition[i - 1] = "q";
-            promoControl = 1;
+            PiecesPosition[i - 1] = "q";
+            PromoControl = 1;
+            PiecesToRemove = "EMI";
           } else {
-            piecesPosition[i - 1] = "p";
+            PiecesPosition[i - 1] = "p";
           }
+          animePiece(leaving, landing, "E");
           break;
         case "B":
         case "b":
-          piecesPosition[bSqSel - 1] = "b";
+          PiecesPosition[BSqSel - 1] = "b";
+          PiecesPosition[i - 1] = "n";
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "n";
           break;
         case "Q":
         case "q":
-          piecesPosition[bSqSel - 1] = "b";
+          PiecesPosition[BSqSel - 1] = "b";
+          if (i > 56) {
+            PiecesPosition[i - 1] = "q";
+            PromoControl = 1;
+            PiecesToRemove = "EMI";
+          } else {
+            PiecesPosition[i - 1] = "c";
+          }
           animePiece(leaving, landing, "E");
-          piecesPosition[i - 1] = "c";
           break;
       }
       break;
   }
-  castlesInCheck(); //get array with all castles in check
-  totalWCastles = 0;
-  totalBCastles = 0;
-  piecesPosition.forEach(countCastles); //count how many castles on board
+  call888(); //count how many castles on board
   shortCode();
+  castlesInCheck(); //review castles in check
+
 }
