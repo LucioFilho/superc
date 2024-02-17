@@ -116,6 +116,9 @@ class Game:
         elif self.menu_context == "general":
             # Assuming 'Assets' is now an available option and its index is determined
             if option_index == 0:  # Assuming 'Assets' is the first option
+                # Close any existing AssetPopup before opening a new one
+                self.popups = [popup for popup in self.popups if not isinstance(popup, AssetPopup)]
+            
                 # Determine the position where the popup should be opened, adjust as needed
                 adjusted_pos = (100, 100)  # Example position
                 

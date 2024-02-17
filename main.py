@@ -1,6 +1,9 @@
 import pygame
-# Ensure pygame is initialized before importing other modules that depend on it
+# import db.noland_db as sqldb
+
 pygame.init()
+
+# DataBase = sqldb.DataBaseNoland(**sqldb.db_access)
 
 from game.game import Game
 
