@@ -5,11 +5,11 @@ db_access = {
     'user': 'root',
     'password': input('Enter database password: '), # Prompt for password
     'host': 'localhost',
-    'database': 'noland',
+    'database': 'turnover',
     'raise_on_warnings': True
 }
 
-class DataBaseNoland:
+class DataBaseTurnover:
     def __init__(self, **kwargs):
         self.conector = mysql.connector.connect(**kwargs)
     

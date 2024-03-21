@@ -1,7 +1,6 @@
 import pygame
+import cairo
 from settings.config import *
-from ui.board import *
-
 
 class Popup:
     def __init__(self, title, size, position, font_manager):
@@ -191,7 +190,7 @@ class AssetPopup(Popup):
         self.icons = [pygame.image.load(icon_path) for icon_path in item_images]
         self.items = []  # To store item rects for positioning
         self.vertical_scroll_offset = 0  # Initialize vertical scroll offset
-         
+        
     def draw(self, screen):
         super().draw(screen)  # Draw the popup itself
         item_size = (100, 100)  # Size of each item, including the background
@@ -248,14 +247,47 @@ class PlayPopup(Popup):
 class BoardPopup(Popup):
     def __init__(self, title, size, position, font_manager):
         super().__init__(title, size, position, font_manager)
-        self.chess_board = ChessBoard(INITIAL_POSITIONS)  # Initialize with positions of pieces
+        self.board_size = min(size[0], size[1]) - self.header_height
+        self.square_size = self.board_size // 8
+        self.margin_left = 10  # Margin from the left edge of the popup to the board
 
     def draw(self, screen):
-        super().draw(screen)  # Draw the popup itself
-        board_start = (self.position[0] + self.margin_left, self.position[1] + self.margin_top)
-        self.chess_board.draw(screen, self.square_size, board_start)
+        super().draw(screen)
+        # Adjust board_start_x to use self.margin_left for alignment
+        board_start_x = self.position[0] + self.margin_left
+        board_start_y = self.position[1] + self.header_height + (self.size[1] - self.header_height - self.board_size) // 2
 
+        # Draw the chessboard squares
+        for row in range(8):
+            for col in range(8):
+                rect = pygame.Rect(board_start_x + col * self.square_size, board_start_y + row * self.square_size, self.square_size, self.square_size)
+                pygame.draw.rect(screen, (200, 200, 200) if (row + col) % 2 == 0 else (55, 55, 55), rect)
         
+        # Example of drawing a piece, scaling its size
+        piece_size = self.square_size // 2  # Example: Making the piece half the size of a square
+        piece_position = (board_start_x + piece_size // 2, board_start_y + piece_size // 2)  # Example position
+        pygame.draw.circle(screen, (255, 0, 0), piece_position, piece_size // 2)  # Draw a piece as a circle
+        
+    def resize(self, dx, dy, interaction_type):
+        # Call the superclass's resize method to handle the basic resizing logic
+        super().resize(dx, dy, interaction_type)
+        
+        # Calculate new board size based on the new dimensions of the popup, considering both width and height
+        new_width = self.size[0] - self.margin_left * 2  # Subtract margins from total width
+        new_height = self.size[1] - self.header_height - 20  # Adjust for header height and a bottom margin
+        
+        # Use the smaller dimension to determine the board size, maintaining aspect ratio
+        self.board_size = min(new_width, new_height)
+        self.square_size = self.board_size // 8  # Recalculate square size based on new board size
+        
+        # Ensure the board does not exceed the popup size in either dimension
+        if self.board_size + self.margin_left * 2 > self.size[0]:
+            self.board_size = self.size[0] - self.margin_left * 2
+        if self.board_size + self.header_height + 20 > self.size[1]:
+            self.board_size = self.size[1] - self.header_height - 20
+        
+        self.square_size = self.board_size // 8  # Recalculate square size based on final board size
+
 class PuzzlesPopup(Popup):
     def __init__(self, title, size, position, font_manager):
         super().__init__(title, size, position, font_manager)

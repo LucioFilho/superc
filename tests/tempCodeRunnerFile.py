@@ -1,0 +1,1 @@
+"tests\chess_piece.png"

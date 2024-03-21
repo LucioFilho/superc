@@ -1,4 +1,5 @@
 import pygame
+import cairo
 import sys
  
 from settings.config import *
@@ -21,14 +22,16 @@ class Game:
         self.current_right_clicked_popup = None
         self.current_resizing_popup = None
         self.dragging_popup = None  # Add this line to initialize the dragging_popup attribute
-
+        
     def setup_screen(self):
         # Extracts screen setup to its method for clarity
         self.screen_width = SCREEN_WIDTH
         self.screen_height = SCREEN_HEIGHT
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.RESIZABLE)
         pygame.display.set_caption(GAME_TITLE)
-        
+        cairo_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, SCREEN_WIDTH, SCREEN_HEIGHT)
+        cairo_context = cairo.Context(cairo_surface)
+
     def draw_grid_on_background(self):
         self.background_surface.fill(self.background_color)  # Clear previous drawings
         grid_spacing = GRID_SPACING
@@ -63,7 +66,6 @@ class Game:
         # Update screen size
         self.screen_width, self.screen_height = event.size
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.RESIZABLE)
-        
         # Recreate the background surface
         self.background_surface = pygame.Surface((self.screen_width, self.screen_height))
         self.background_surface.fill(self.background_color)
@@ -100,6 +102,9 @@ class Game:
             self.process_mouse_up(event)
         elif event.type == pygame.MOUSEMOTION:
             self.process_mouse_motion(event)
+        
+        
+        # Add logic to handle chess-specific events, like piece selection and movement
 
     def open_assets(self, mouse_pos):
         adjusted_pos = (max(mouse_pos[0] - 100, 0), max(mouse_pos[1] - 100, 0))
@@ -166,7 +171,7 @@ class Game:
 
     def handle_menu_option_selection(self, option_index, mouse_pos):  
         options = self.get_general_menu_options()
-        
+
         if self.menu_context == "popup" and option_index == 0:
             for i, popup in enumerate(self.popups):
                 popup_rect = pygame.Rect(popup.position[0], popup.position[1], popup.size[0], popup.size[1])
@@ -178,20 +183,23 @@ class Game:
             action_func = options.get(selected_option_text)
             if action_func:
                 action_func(mouse_pos)  
-    
+
     def determine_menu_context(self, mouse_pos):
         # Example: Check if right-click is over a popup
         for popup in self.popups:
             popup_rect = pygame.Rect(popup.position[0], popup.position[1], popup.size[0], popup.size[1])
             if popup_rect.collidepoint(mouse_pos):
                 return "popup"  # Identifies the popup context
-        return "general"
-            
+
+        # Here, add more checks for other elements (e.g., NPCs, items) as your game develops
+
+        return "general"  # Default context
+
     def process_mouse_down(self, event):
         if event.button == 3:  # Right-click
             # Determine the context for the right-click menu
             self.menu_context = self.determine_menu_context(event.pos)
-            
+
             if self.menu_context == "popup":
                 for popup in self.popups:
                     # Find and track the right-clicked popup
@@ -213,10 +221,9 @@ class Game:
             clicked_on_popup = False
             action = None  # Initialize action to None or a default value
             edge = None  # Initialize edge to None or a default value
-    
+
             for popup in reversed(self.popups):
                 action, edge = popup.check_interaction(event.pos)  # Retrieve both action and edge
-                
                 if action == "drag":
                     self.dragging_popup = popup
                     popup.dragging = True
