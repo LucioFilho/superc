@@ -1,6 +1,7 @@
 import pygame
 import cairo
-import math
+import math 
+
 
 # Initialize Pygame
 pygame.init()
